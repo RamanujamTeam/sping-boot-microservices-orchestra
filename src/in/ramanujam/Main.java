@@ -2,7 +2,8 @@ package in.ramanujam;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.model.Info;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.DockerClientBuilder;
 
 public class Main {
@@ -10,22 +11,19 @@ public class Main {
     public static void main(String[] args) {
 
         DockerClient dockerClient = DockerClientBuilder.getInstance("tcp://localhost:2375").build();
-        Info info = dockerClient.infoCmd().exec();
-        System.out.println("!!! INFO:");
-        System.out.print(info);
+
+        ExposedPort tcp6379 = ExposedPort.tcp(6379);
+        Ports portBindings = new Ports();
+        portBindings.bind(tcp6379, new Ports.Binding("localhost", "7777"));
 
         CreateContainerResponse container = dockerClient.createContainerCmd("redis")
-                .withCmd("touch", "/test")
+                .withExposedPorts(tcp6379)
+                .withPortBindings(portBindings)
                 .exec();
         System.out.println("!!! START:");
+
         dockerClient.startContainerCmd(container.getId()).exec();
-        System.out.println("!!! STOP:");
-//		dockerClient.stopContainerCmd(container.getId()).exec();
-        System.out.println("!!! END:");
-        dockerClient.removeContainerCmd(container.getId()).exec();
-//		dockerClient.waitContainerCmd(container.getId()).exec();
-
+//        dockerClient.waitContainerCmd(container.getId()).exec(); // TODO: use waitContainerCmd!
+        dockerClient.stopContainerCmd(container.getId()).exec();
     }
-
-
 }
