@@ -16,13 +16,18 @@ public class Main {
         Ports portBindings = new Ports();
         portBindings.bind(tcp6379, new Ports.Binding("localhost", "7777"));
 
-        CreateContainerResponse container = dockerClient.createContainerCmd("redis")
+        CreateContainerResponse container = dockerClient.createContainerCmd("redis") // TODO: check that we are not duplicating containers
                 .withExposedPorts(tcp6379)
                 .withPortBindings(portBindings)
                 .exec();
         System.out.println("!!! START:");
 
         dockerClient.startContainerCmd(container.getId()).exec();
+        try {
+            Thread.sleep(100000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 //        dockerClient.waitContainerCmd(container.getId()).exec(); // TODO: use waitContainerCmd!
         dockerClient.stopContainerCmd(container.getId()).exec();
     }
