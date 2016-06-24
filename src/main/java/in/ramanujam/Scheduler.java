@@ -26,6 +26,7 @@ public class Scheduler {
 
     @Scheduled(fixedDelay = 1000)
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
+        //todo implement StAX
         System.out.println("Hello!!!");
 
         Jedis jedis = new Jedis("localhost", 7777);
