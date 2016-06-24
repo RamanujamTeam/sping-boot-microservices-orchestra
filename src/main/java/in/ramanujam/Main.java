@@ -1,10 +1,16 @@
 package in.ramanujam;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
+import com.github.dockerjava.api.model.WaitResponse;
 import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.command.WaitContainerResultCallback;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 public class Main {
 
@@ -21,14 +27,9 @@ public class Main {
                 .withPortBindings(portBindings)
                 .exec();
         System.out.println("!!! START:");
-
         dockerClient.startContainerCmd(container.getId()).exec();
-        try {
-            Thread.sleep(100000000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-//        dockerClient.waitContainerCmd(container.getId()).exec(); // TODO: use waitContainerCmd!
-        dockerClient.stopContainerCmd(container.getId()).exec();
+        dockerClient.waitContainerCmd(container.getId()).exec( new WaitContainerResultCallback()); // TODO: use waitContainerCmd!
+        System.out.println("The End!");
+//        dockerClient.stopContainerCmd(container.getId()).exec();
     }
 }
