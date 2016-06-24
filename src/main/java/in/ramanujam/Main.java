@@ -1,16 +1,11 @@
 package in.ramanujam;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
-import com.github.dockerjava.api.model.WaitResponse;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
-
-import java.io.Closeable;
-import java.io.IOException;
 
 public class Main {
 
@@ -23,13 +18,11 @@ public class Main {
         portBindings.bind(tcp6379, new Ports.Binding("localhost", "7777"));
 
         CreateContainerResponse container = dockerClient.createContainerCmd("redis") // TODO: check that we are not duplicating containers
-                .withExposedPorts(tcp6379)
+                .withExposedPorts(tcp6379) // TODO: be sure that the port 7777 will be available for the next run of main method
                 .withPortBindings(portBindings)
                 .exec();
-        System.out.println("!!! START:");
         dockerClient.startContainerCmd(container.getId()).exec();
-        dockerClient.waitContainerCmd(container.getId()).exec( new WaitContainerResultCallback()); // TODO: use waitContainerCmd!
-        System.out.println("The End!");
+        dockerClient.waitContainerCmd(container.getId()).exec( new WaitContainerResultCallback()).awaitStatusCode();; // TODO: use waitContainerCmd!
 //        dockerClient.stopContainerCmd(container.getId()).exec();
     }
 }
