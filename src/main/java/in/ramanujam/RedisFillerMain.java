@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableScheduling
-public class ScheduledMain {
+public class RedisFillerMain {
     public static void main(String[] args) {
-        SpringApplication.run(ScheduledMain.class, args);
+        SpringApplication.run(RedisFillerMain.class, args);
     }
 }

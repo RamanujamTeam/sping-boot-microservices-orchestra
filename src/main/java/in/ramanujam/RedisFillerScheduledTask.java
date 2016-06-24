@@ -19,29 +19,29 @@ import java.io.IOException;
  * @author Roma
  */
 @Component
-public class Scheduler {
+public class RedisFillerScheduledTask {
 
     @Value("redis-data.xml")
-    private Resource redis;
+    private Resource redisDataFile;
 
-    @Scheduled(fixedDelay = 1000)
+    private int currentPosition = 1;
+    // TODO: add StAX
+    @Scheduled(fixedDelay = 30000) // TODO: add batching
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
-        System.out.println("Hello!!!");
-
         Jedis jedis = new Jedis("localhost", 7777);
-        File fXmlFile = redis.getFile();
+        File fXmlFile = redisDataFile.getFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
 
         NodeList records = doc.getDocumentElement().getChildNodes();
 
-        for (int i = 1; i < records.getLength(); i++){
-            String id = records.item(i).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
-            String bitcoin = records.item(i).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
-            System.out.println(id);
-            System.out.println(bitcoin);
-            //jedis.set(id, bitcoin);
+        int lastIndex = Math.min(currentPosition + 100, records.getLength());
+        while (currentPosition < lastIndex){
+            String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
+            String bitcoin = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
+            currentPosition++;
+            jedis.set(id, bitcoin);
         }
     }
 }

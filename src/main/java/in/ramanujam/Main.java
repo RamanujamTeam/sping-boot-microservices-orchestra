@@ -6,6 +6,7 @@ import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
+import org.springframework.boot.SpringApplication;
 
 public class Main {
 
@@ -22,7 +23,10 @@ public class Main {
                 .withPortBindings(portBindings)
                 .exec();
         dockerClient.startContainerCmd(container.getId()).exec();
-        dockerClient.waitContainerCmd(container.getId()).exec( new WaitContainerResultCallback()).awaitStatusCode();; // TODO: use waitContainerCmd!
+
+        SpringApplication.run(RedisFillerMain.class, args);
+
+        dockerClient.waitContainerCmd(container.getId()).exec( new WaitContainerResultCallback()).awaitStatusCode(); // TODO: use waitContainerCmd!
 //        dockerClient.stopContainerCmd(container.getId()).exec();
     }
 }
