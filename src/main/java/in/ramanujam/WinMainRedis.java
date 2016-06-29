@@ -9,7 +9,7 @@ import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
 
-public class WinMain {
+public class WinMainRedis {
 
     public static void main(String[] args) {
 
