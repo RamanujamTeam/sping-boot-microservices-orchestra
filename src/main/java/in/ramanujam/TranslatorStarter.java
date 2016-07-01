@@ -6,6 +6,7 @@ import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
+import in.ramanujam.properties.ElasticSearchProperties;
 import in.ramanujam.properties.RedisProperties;
 import org.springframework.boot.SpringApplication;
 
@@ -68,10 +69,16 @@ public class TranslatorStarter
 
   private static CreateContainerResponse getElasticSearchContainer( DockerClient dockerClient )
   {
-    return createContainer(dockerClient, 9200, "localhost", 5555, "elasticsearch" );
+    ElasticSearchProperties properties = new ElasticSearchProperties();
+
+    return createContainer(dockerClient, properties.getContainerElasticsearchPort(),
+                           properties.getContainerElasticsearchHost(),
+                           properties.getContainerElasticsearchExternalPort(),
+                           properties.getContainerElasticsearchName() );
   }
 
-  private static CreateContainerResponse createContainer( DockerClient dockerClient, int port, String host, Integer hostPort, String containerName )
+  private static CreateContainerResponse createContainer( final DockerClient dockerClient, final Integer port, final String host,
+                                                          final Integer hostPort, final String containerName )
   {
     ExposedPort exposedPort = ExposedPort.tcp(port);
     Ports portBinding = new Ports();
