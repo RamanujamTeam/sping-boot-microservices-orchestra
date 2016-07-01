@@ -1,6 +1,5 @@
 package in.ramanujam.service.retriever;
 
-import in.ramanujam.model.ElasticSearchRecord;
 import in.ramanujam.model.RedisRecord;
 import in.ramanujam.service.TestUtil;
 

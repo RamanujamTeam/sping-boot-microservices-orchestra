@@ -22,8 +22,6 @@ public class TranslatorStarter
   {
     DockerClient dockerClient = DockerClientFactory.getClient();
 
-    Info info = dockerClient.infoCmd().exec();
-
     CreateContainerResponse redisContainer = getRedisContainer( dockerClient );
 
     CreateContainerResponse ESContainer = getElasticSearchContainer( dockerClient );
@@ -34,9 +32,9 @@ public class TranslatorStarter
     SpringApplication.run( RedisFillerMain.class, args );
     dockerClient.waitContainerCmd(redisContainer.getId())
             .exec( new WaitContainerResultCallback() )
-            .awaitStatusCode(); // TODO: use waitContainerCmd!
+            .awaitStatusCode();
 
-    dockerClient.removeContainerCmd( redisContainer.getId() ).exec();
+    dockerClient.removeContainerCmd( redisContainer.getId() ).exec(); // TODO: use killContainerCmd
     dockerClient.removeContainerCmd( ESContainer.getId() ).exec();
 //    dockerClient.stopContainerCmd(redisContainer.getId()).exec();
 //    dockerClient.stopContainerCmd(ESContainer.getId()).exec();
@@ -50,7 +48,7 @@ public class TranslatorStarter
     }
     catch( Exception e )
     {
-      if( e.getMessage().contains( "port is already allocated" ) )
+      if( e.getMessage().contains( "port is already allocated" ) ) // consider this is our container from the previous program run
         System.out.println( e.getMessage() );
       else
         throw e;

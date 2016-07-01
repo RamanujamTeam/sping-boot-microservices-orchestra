@@ -72,7 +72,6 @@ public class TestUtil
   private static String randomIP()
   {
     Random random = new Random();
-    randInt(random, 0, 255);
     return randInt(random, 0, 255) + "." + randInt(random, 0, 255) + "." + randInt(random, 0, 255) + "." + randInt(random, 0, 255);
   }
 

@@ -17,7 +17,7 @@ public class RedisProperties extends AbstractProperties
 
   public RedisProperties()
   {
-    load();
+    load(); // TODO: should load only redis properties file
   }
 
   public String getContainerRedisName()

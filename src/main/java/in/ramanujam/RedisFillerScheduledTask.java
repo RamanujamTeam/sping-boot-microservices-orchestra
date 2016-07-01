@@ -43,7 +43,7 @@ public class RedisFillerScheduledTask {
 
         int lastIndex = Math.min( currentPosition + 100, records.getLength() );
         String hashSetName = "bitcoins";
-        while (currentPosition < lastIndex){
+        while (currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
             String bitcoin = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
             currentPosition++;
