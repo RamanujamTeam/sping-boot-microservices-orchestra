@@ -50,13 +50,6 @@ public class DockerClientFactory
             .withApiVersion( properties.getDockerApiVersion() )
             .build();
 
-//    DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
-//            .withDockerCertPath("C:/Users/Backendless/.docker/machine/certs")
-//            .withDockerHost("tcp://192.168.99.100:2376")
-//            .withDockerTlsVerify(true)
-//            .withApiVersion( "1.21" )
-//            .build();
-
     return DockerClientBuilder.getInstance( config ).build();
   }
 
@@ -65,6 +58,5 @@ public class DockerClientFactory
     DockerProperties properties = new DockerProperties();
 
     return DockerClientBuilder.getInstance("tcp://" + properties.getDockerHost() + ":" + properties.getDockerPort()).build();
-//    return DockerClientBuilder.getInstance("tcp://localhost:2375").build();
   }
 }
