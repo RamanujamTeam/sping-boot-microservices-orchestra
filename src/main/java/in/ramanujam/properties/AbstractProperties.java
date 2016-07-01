@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertiesManager
+public abstract class AbstractProperties
 {
-  Properties appProps;
+  private Properties appProps;
 
   public void load()
   {
-    try ( InputStream in = getClass().getClassLoader().getResourceAsStream( "config.properties" ) )
+    try ( InputStream in = getClass().getClassLoader().getResourceAsStream( getFile() ) )
     {
       Properties defaultProps = new Properties();
       defaultProps.load( in );
@@ -20,13 +20,12 @@ public class PropertiesManager
     {
       throw new RuntimeException( e );
     }
-
   }
 
-  public static void main( String[] args )
+  public Properties getAppProps()
   {
-    PropertiesManager propertiesManager = new PropertiesManager();
-    propertiesManager.load();
-    System.out.println( propertiesManager.appProps.getProperty( "lol" ) );
+    return appProps;
   }
+
+  protected abstract String getFile();
 }
