@@ -2,6 +2,7 @@ package in.ramanujam.service;
 
 import com.mongodb.*;
 import in.ramanujam.model.MongoDBRecord;
+import in.ramanujam.properties.MongoDBProperties;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -19,11 +20,11 @@ public class MongoAggregatorMain
     MongoClient mongo = null;
     try
     {
-      mongo = new MongoClient( "192.168.99.100", 32771 );
+      MongoDBProperties properties = new MongoDBProperties();
+      mongo = new MongoClient( properties.getMongoHost(), properties.getMongoPort() );
+      DB db = mongo.getDB( properties.getMongoDb() );
 
-      DB db = mongo.getDB( "mydb" );
-
-      DBCollection collection = db.getCollection( "dummyColl" );
+      DBCollection collection = db.getCollection( properties.getMongoCollection() );
 
       List<MongoDBRecord> records = TestUtil.generateMongoRecords();
       MongoAggregator.aggregate( collection, records );

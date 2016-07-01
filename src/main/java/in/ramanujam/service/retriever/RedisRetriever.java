@@ -12,7 +12,7 @@ import java.util.List;
  * Date: 01.07.2016
  * Time: 19:56
  */
-public class RedisRetiever
+public class RedisRetriever
 {
   public static List<RedisRecord> retrieveAllRecords()
   {

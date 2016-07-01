@@ -12,9 +12,8 @@ public abstract class AbstractProperties
   {
     try ( InputStream in = getClass().getClassLoader().getResourceAsStream( getFile() ) )
     {
-      Properties defaultProps = new Properties();
-      defaultProps.load( in );
-      appProps = new Properties( defaultProps );
+      appProps = new Properties();
+      appProps.load( in );
     }
     catch ( IOException e )
     {

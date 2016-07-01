@@ -37,16 +37,17 @@ public class RedisFillerScheduledTask {
         File fXmlFile = redisDataFile.getFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(fXmlFile);
+        Document doc = dBuilder.parse( fXmlFile );
 
         NodeList records = doc.getDocumentElement().getChildNodes();
 
-        int lastIndex = Math.min(currentPosition + 100, records.getLength());
+        int lastIndex = Math.min( currentPosition + 100, records.getLength() );
+        String hashSetName = "bitcoins";
         while (currentPosition < lastIndex){
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
             String bitcoin = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
             currentPosition++;
-            jedis.set(id, bitcoin);
+            jedis.hset( hashSetName, id, bitcoin );
         }
         System.out.println( "Added " + lastIndex + " records" );
     }
