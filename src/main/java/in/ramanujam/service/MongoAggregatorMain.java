@@ -28,8 +28,6 @@ public class MongoAggregatorMain
 
       List<MongoDBRecord> records = TestUtil.generateMongoRecords();
       MongoAggregator.aggregate( collection, records );
-      MongoDBRecord record = TestUtil.generateMongoRecord();
-      MongoAggregator.aggregate( collection, record );
     }
     catch( UnknownHostException e )
     {

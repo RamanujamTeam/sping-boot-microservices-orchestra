@@ -15,6 +15,6 @@ public class RedisRetriever
 {
   public static List<RedisRecord> retrieveAllRecords()
   {
-    return TestUtil.generateRedisRecords();
+    return TestUtil.generateRedisRecords( 1, 1000 );
   }
 }
