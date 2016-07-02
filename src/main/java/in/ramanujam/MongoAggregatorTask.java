@@ -29,7 +29,6 @@ public class MongoAggregatorTask
     //@Scheduled(fixedDelay = 301000)
     @Scheduled(fixedDelay = 10000)
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
-        retrieveMongoDBRecords();
 
         MongoClient mongo = null;
         try
