@@ -82,8 +82,8 @@ public class MongoAggregationTest
 
   private static Long removeRecordFromRedis( RedisRecord redisRecord )
   {
-    Jedis jedis = new Jedis( new RedisProperties().getContainerRedisHost(),
-                             new RedisProperties().getContainerRedisExternalPort());
+    Jedis jedis = new Jedis( new RedisProperties().getRedisContainerHost(),
+                             new RedisProperties().getRedisContainerExternalPort());
     return jedis.hdel( "bitcoins", String.valueOf( redisRecord.getId() ) );
   }
 

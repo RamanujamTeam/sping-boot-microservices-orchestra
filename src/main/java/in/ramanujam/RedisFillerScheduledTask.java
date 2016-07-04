@@ -1,6 +1,7 @@
 package in.ramanujam;
 
 import in.ramanujam.properties.RedisProperties;
+import in.ramanujam.service.bus.MessageBus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -47,6 +48,7 @@ public class RedisFillerScheduledTask {
             currentPosition++;
             jedis.hset( hashSetName, id, bitcoin );
         }
+        MessageBus.getInstance().sendMessage( "AGGREGATE" );
         System.out.println( "Added " + ( lastIndex - 1 ) + " records" );
     }
 }

@@ -11,23 +11,20 @@ import in.ramanujam.service.MongoAggregator;
 import in.ramanujam.service.MongoDBRecordsMerger;
 import in.ramanujam.service.retriever.ElasticSearchRetriever;
 import in.ramanujam.service.retriever.RedisRetriever;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
  * @author Roma
  */
-@Component
+//@Component
 public class MongoAggregatorTask
 {
     //@Scheduled(fixedDelay = 301000)
-    @Scheduled(fixedDelay = 10000)
+//    @Scheduled(fixedDelay = 10000)
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
 
         MongoClient mongo = null;
@@ -41,10 +38,6 @@ public class MongoAggregatorTask
 
             List<MongoDBRecord> records = retrieveMongoDBRecords();
             MongoAggregator.aggregate( collection, records );
-        }
-        catch( UnknownHostException e )
-        {
-            throw new RuntimeException( e );
         }
         finally
         {
