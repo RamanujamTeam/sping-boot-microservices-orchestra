@@ -9,10 +9,10 @@ package in.ramanujam.properties;
 public class ElasticSearchProperties extends AbstractProperties
 {
 
-  private static final String CONTAINER_ELASTICSEARCH_NAME = "container.elasticsearch.name";
-  private static final String CONTAINER_ELASTICSEARCH_HOST = "container.elasticsearch.host";
-  private static final String CONTAINER_ELASTICSEARCH_PORT = "container.elasticsearch.port";
-  private static final String CONTAINER_ELASTICSEARCH_EXTERNAL_PORT = "container.elasticsearch.externalPort";
+  private static final String ELASTICSEARCH_CONTAINER_NAME = "elasticsearch.container.name";
+  private static final String ELASTICSEARCH_CONTAINER_HOST = "elasticsearch.container.host";
+  private static final String ELASTICSEARCH_CONTAINER_PORT = "elasticsearch.container.port";
+  private static final String ELASTICSEARCH_CONTAINER_EXTERNAL_PORT = "elasticsearch.container.externalPort";
   private static final String CONFIG_FILE = "config.properties";
 
   public ElasticSearchProperties()
@@ -20,24 +20,24 @@ public class ElasticSearchProperties extends AbstractProperties
     load();
   }
 
-  public String getContainerElasticsearchName()
+  public String getElasticsearchContainerName()
   {
-    return getAppProps().getProperty( CONTAINER_ELASTICSEARCH_NAME );
+    return getAppProps().getProperty( ELASTICSEARCH_CONTAINER_NAME );
   }
 
-  public String getContainerElasticsearchHost()
+  public String getElasticsearchContainerHost()
   {
-    return getAppProps().getProperty( CONTAINER_ELASTICSEARCH_HOST );
+    return getAppProps().getProperty( ELASTICSEARCH_CONTAINER_HOST );
   }
 
-  public Integer getContainerElasticsearchPort()
+  public Integer getElasticsearchContainerPort()
   {
-    return Integer.parseInt( getAppProps().getProperty( CONTAINER_ELASTICSEARCH_PORT ) );
+    return Integer.parseInt( getAppProps().getProperty( ELASTICSEARCH_CONTAINER_PORT ) );
   }
 
-  public Integer getContainerElasticsearchExternalPort()
+  public Integer getElasticsearchContainerExternalPort()
   {
-    return Integer.parseInt( getAppProps().getProperty( CONTAINER_ELASTICSEARCH_EXTERNAL_PORT ) );
+    return Integer.parseInt( getAppProps().getProperty( ELASTICSEARCH_CONTAINER_EXTERNAL_PORT ) );
   }
 
   @Override

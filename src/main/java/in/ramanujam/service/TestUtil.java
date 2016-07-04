@@ -15,7 +15,7 @@ import java.util.UUID;
  * Date: 01.07.2016
  * Time: 19:57
  */
-public class TestUtil
+public class TestUtil // TODO: add automated tests!
 {
   public static MongoDBRecord generateMongoRecord()
   {
