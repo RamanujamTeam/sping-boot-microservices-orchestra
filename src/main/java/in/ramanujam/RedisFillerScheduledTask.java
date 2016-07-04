@@ -27,7 +27,7 @@ public class RedisFillerScheduledTask {
 
     private int currentPosition = 1;
     // TODO: add StAX
-    @Scheduled(fixedDelay = 30000) // TODO: add batching
+    @Scheduled(fixedDelay = 1000) // TODO: add batching
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
         RedisProperties redisProperties = new RedisProperties();
 
@@ -40,13 +40,12 @@ public class RedisFillerScheduledTask {
         NodeList records = doc.getDocumentElement().getChildNodes();
 
         int lastIndex = Math.min( currentPosition + 100, records.getLength() );
-        String hashSetName = "bitcoins";
+        String hashSetName = "bitcoins"; // TODO: into the props file
         while (currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
             String bitcoin = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
             currentPosition++;
             jedis.hset( hashSetName, id, bitcoin );
         }
-        System.out.println( "Added " + ( lastIndex - 1 ) + " records" );
     }
 }

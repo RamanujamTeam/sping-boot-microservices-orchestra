@@ -1,5 +1,7 @@
 package in.ramanujam.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Denys Konakhevych
@@ -8,11 +10,17 @@ package in.ramanujam.model;
  */
 public class ElasticSearchRecord
 {
+  @JsonProperty
   private int id;
+  @JsonProperty
   private String gender;
+  @JsonProperty("first_name")
   private String firstName;
+  @JsonProperty("last_name")
   private String lastName;
+  @JsonProperty
   private String email;
+  @JsonProperty("ip_address")
   private String ipAddress;
 
   public ElasticSearchRecord()
