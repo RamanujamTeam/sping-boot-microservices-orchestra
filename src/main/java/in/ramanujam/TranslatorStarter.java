@@ -3,12 +3,10 @@ package in.ramanujam;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
 import in.ramanujam.properties.ElasticSearchProperties;
 import in.ramanujam.properties.RedisProperties;
-import org.springframework.boot.SpringApplication;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,7 +27,6 @@ public class TranslatorStarter
     tryStartContainer( dockerClient, redisContainer );
     tryStartContainer( dockerClient, ESContainer );
 
-    SpringApplication.run( RedisFillerMain.class, args );
     dockerClient.waitContainerCmd(redisContainer.getId())
             .exec( new WaitContainerResultCallback() )
             .awaitStatusCode();
@@ -40,11 +37,11 @@ public class TranslatorStarter
 //    dockerClient.stopContainerCmd(ESContainer.getId()).exec();
   }
 
-  private static void tryStartContainer( DockerClient dockerClient, CreateContainerResponse redisContainer )
+  private static void tryStartContainer( DockerClient dockerClient, CreateContainerResponse container )
   {
     try
     {
-      dockerClient.startContainerCmd( redisContainer.getId() ).exec();
+      dockerClient.startContainerCmd( container.getId() ).exec();
     }
     catch( Exception e )
     {
@@ -59,20 +56,20 @@ public class TranslatorStarter
   {
     RedisProperties properties = new RedisProperties();
 
-    return createContainer(dockerClient, properties.getContainerRedisPort(),
-                           properties.getContainerRedisHost(),
-                           properties.getContainerRedisExternalPort(),
-                           properties.getContainerRedisName() );
+    return createContainer(dockerClient, properties.getRedisContainerPort(),
+                           properties.getRedisContainerHost(),
+                           properties.getRedisContainerExternalPort(),
+                           properties.getRedisContainerName() );
   }
 
   private static CreateContainerResponse getElasticSearchContainer( DockerClient dockerClient )
   {
     ElasticSearchProperties properties = new ElasticSearchProperties();
 
-    return createContainer(dockerClient, properties.getContainerElasticsearchPort(),
-                           properties.getContainerElasticsearchHost(),
-                           properties.getContainerElasticsearchExternalPort(),
-                           properties.getContainerElasticsearchName() );
+    return createContainer(dockerClient, properties.getElasticsearchContainerPort(),
+                           properties.getElasticsearchContainerHost(),
+                           properties.getElasticsearchContainerExternalPort(),
+                           properties.getElasticsearchContainerName() );
   }
 
   private static CreateContainerResponse createContainer( final DockerClient dockerClient, final Integer port, final String host,

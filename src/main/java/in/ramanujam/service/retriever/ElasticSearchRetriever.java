@@ -15,6 +15,6 @@ public class ElasticSearchRetriever
 {
   public static List<ElasticSearchRecord> retrieveAllRecords()
   {
-    return TestUtil.generateElasticSearchRecords( 1, 1000 );
+    return TestUtil.generateElasticSearchRecords( 1, 1000 ); // TODO: replace stub
   }
 }

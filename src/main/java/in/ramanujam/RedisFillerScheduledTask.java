@@ -1,6 +1,5 @@
 package in.ramanujam;
 
-import in.ramanujam.properties.DockerProperties;
 import in.ramanujam.properties.RedisProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -31,9 +30,8 @@ public class RedisFillerScheduledTask {
     @Scheduled(fixedDelay = 30000) // TODO: add batching
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
         RedisProperties redisProperties = new RedisProperties();
-        DockerProperties dockerProperties = new DockerProperties();
 
-        Jedis jedis = new Jedis(dockerProperties.getDockerHost(), redisProperties.getContainerRedisExternalPort());
+        Jedis jedis = new Jedis( redisProperties.getRedisContainerHost(), redisProperties.getRedisContainerExternalPort());
         File fXmlFile = redisDataFile.getFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -49,6 +47,6 @@ public class RedisFillerScheduledTask {
             currentPosition++;
             jedis.hset( hashSetName, id, bitcoin );
         }
-        System.out.println( "Added " + lastIndex + " records" );
+        System.out.println( "Added " + ( lastIndex - 1 ) + " records" );
     }
 }
