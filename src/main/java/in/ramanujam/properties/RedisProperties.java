@@ -13,11 +13,11 @@ public class RedisProperties extends AbstractProperties
   private static final String CONTAINER_REDIS_PORT = "redis.container.port";
   private static final String CONTAINER_REDIS_EXTERNAL_PORT = "redis.container.externalPort";
   private static final String REDIS_HASHSET_NAME = "redis.hashset.name";
-  private static final String CONFIG_FILE = "config.properties";
+  private static final String CONFIG_FILE = "redis.properties";
 
   public RedisProperties()
   {
-    load(); // TODO: should load only redis properties file
+    load();
   }
 
   public String getRedisContainerName()

@@ -13,7 +13,9 @@ public class ElasticSearchProperties extends AbstractProperties
   private static final String ELASTICSEARCH_CONTAINER_HOST = "elasticsearch.container.host";
   private static final String ELASTICSEARCH_CONTAINER_PORT = "elasticsearch.container.port";
   private static final String ELASTICSEARCH_CONTAINER_EXTERNAL_PORT = "elasticsearch.container.externalPort";
-  private static final String CONFIG_FILE = "config.properties";
+  private static final String ELASTICSEARCH_INDEX_NAME = "elasticsearch.index.name";
+  private static final String ELASTICSEARCH_TYPE_NAME = "elasticsearch.type.name";
+  private static final String CONFIG_FILE = "elasticsearch.properties";
 
   public ElasticSearchProperties()
   {
@@ -38,6 +40,16 @@ public class ElasticSearchProperties extends AbstractProperties
   public Integer getElasticsearchContainerExternalPort()
   {
     return Integer.parseInt( getAppProps().getProperty( ELASTICSEARCH_CONTAINER_EXTERNAL_PORT ) );
+  }
+
+  public String getElasticsearchIndexName()
+  {
+    return getAppProps().getProperty( ELASTICSEARCH_INDEX_NAME );
+  }
+
+  public String getElasticsearchTypeName()
+  {
+    return getAppProps().getProperty( ELASTICSEARCH_TYPE_NAME );
   }
 
   @Override

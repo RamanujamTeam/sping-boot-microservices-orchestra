@@ -40,12 +40,11 @@ public class RedisFillerScheduledTask {
         NodeList records = doc.getDocumentElement().getChildNodes();
 
         int lastIndex = Math.min( currentPosition + 100, records.getLength() );
-        String hashSetName = "bitcoins"; // TODO: into the props file
         while (currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
             String bitcoin = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
             currentPosition++;
-            jedis.hset( hashSetName, id, bitcoin );
+            jedis.hset( new RedisProperties().getRedisHashsetName(), id, bitcoin );
         }
     }
 }

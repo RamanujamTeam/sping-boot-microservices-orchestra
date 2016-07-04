@@ -13,7 +13,7 @@ public class DockerProperties extends AbstractProperties
   private static final String DOCKER_PORT = "docker.port";
   private static final String DOCKER_TLS_VERIFY = "docker.tls.verify";
   private static final String DOCKER_API_VERSION = "docker.apiVersion";
-  private static final String CONFIG_FILE = "config.properties";
+  private static final String CONFIG_FILE = "docker.properties";
 
   public DockerProperties()
   {

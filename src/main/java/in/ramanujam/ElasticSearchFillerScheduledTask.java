@@ -44,9 +44,10 @@ public class ElasticSearchFillerScheduledTask
         ElasticSearchRecord[] esRecords = mapper.readValue( elasticSearchFile.getFile(), ElasticSearchRecord[].class );
         int lastIndex = Math.min( curPos + 100, 1000 );
         while( curPos < lastIndex )
-        { // TODO: extract the index and type names into config
+        {
             curPos++;
-            client.prepareIndex("customers", "customer", String.valueOf( esRecords[curPos-1].getId() ))
+            client.prepareIndex( new ElasticSearchProperties().getElasticsearchIndexName(),
+                                 new ElasticSearchProperties().getElasticsearchTypeName(), String.valueOf( esRecords[curPos-1].getId() ))
                     .setSource( mapper.writeValueAsBytes( esRecords[ curPos-1] ) ).get();
 
         }

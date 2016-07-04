@@ -12,7 +12,7 @@ public class MongoDBProperties extends AbstractProperties
   private static final String MONGO_PORT = "mongo.port";
   private static final String MONGO_DB = "mongo.db";
   private static final String MONGO_COLLECTION = "mongo.collection";
-  private static final String CONFIG_FILE = "config.properties";
+  private static final String CONFIG_FILE = "mongodb.properties";
 
   public MongoDBProperties()
   {
