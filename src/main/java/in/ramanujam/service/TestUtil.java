@@ -37,25 +37,29 @@ public class TestUtil // TODO: add automated tests!
     return records;
   }
 
-  public static List<RedisRecord> generateRedisRecords()
+  public static RedisRecord generateRedisRecord( int id )
+  {
+    return new RedisRecord( id, randomString() );
+  }
+
+  public static List<RedisRecord> generateRedisRecords( int fromId, int toId )
   {
     List<RedisRecord> records = new ArrayList<>( );
-    for( int id = 1; id <= 1000; id++ )
-    {
-      RedisRecord redisRecord = new RedisRecord( id, randomString() );
-      records.add( redisRecord );
-    }
+    for( int id = fromId; id <= toId; id++ )
+      records.add( generateRedisRecord( id ) );
     return records;
   }
 
-  public static List<ElasticSearchRecord> generateElasticSearchRecords()
+  public static ElasticSearchRecord generateElasticSearchRecord( int id )
+  {
+    return new ElasticSearchRecord( id, randomString(), randomString(), randomString(), randomEmail(), randomIP() );
+  }
+
+  public static List<ElasticSearchRecord> generateElasticSearchRecords( int fromId, int toId )
   {
     List<ElasticSearchRecord> records = new ArrayList<>( );
-    for( int id = 1; id <= 1000; id++ )
-    {
-      ElasticSearchRecord elasticSearchRecord = new ElasticSearchRecord( id, randomString(), randomString(), randomString(), randomEmail(), randomIP() );
-      records.add( elasticSearchRecord );
-    }
+    for( int id = fromId; id <= toId; id++ )
+      records.add( generateElasticSearchRecord( id ) );
     return records;
   }
 
