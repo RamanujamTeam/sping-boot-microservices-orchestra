@@ -42,10 +42,6 @@ public class MongoAggregatorTask
             List<MongoDBRecord> records = retrieveMongoDBRecords();
             MongoAggregator.aggregate( collection, records );
         }
-//        catch( UnknownHostException e )
-//        {
-//            throw new RuntimeException( e );
-//        }
         finally
         {
             if( mongo != null )
