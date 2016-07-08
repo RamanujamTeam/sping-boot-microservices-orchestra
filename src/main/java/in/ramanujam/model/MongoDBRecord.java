@@ -8,35 +8,35 @@ package in.ramanujam.model;
  */
 public class MongoDBRecord
 {
-  private RedisRecord redisRecord;
-  private ElasticSearchRecord elasticSearchRecord;
+  private BitcoinRecord redisRecord;
+  private MinerRecord elasticSearchRecord;
 
   public MongoDBRecord()
   {
   }
 
-  public MongoDBRecord( RedisRecord redisRecord, ElasticSearchRecord elasticSearchRecord )
+  public MongoDBRecord( BitcoinRecord redisRecord, MinerRecord elasticSearchRecord )
   {
     this.redisRecord = redisRecord;
     this.elasticSearchRecord = elasticSearchRecord;
   }
 
-  public RedisRecord getRedisRecord()
+  public BitcoinRecord getRedisRecord()
   {
     return redisRecord;
   }
 
-  public void setRedisRecord( RedisRecord redisRecord )
+  public void setRedisRecord( BitcoinRecord redisRecord )
   {
     this.redisRecord = redisRecord;
   }
 
-  public ElasticSearchRecord getElasticSearchRecord()
+  public MinerRecord getElasticSearchRecord()
   {
     return elasticSearchRecord;
   }
 
-  public void setElasticSearchRecord( ElasticSearchRecord elasticSearchRecord )
+  public void setElasticSearchRecord( MinerRecord elasticSearchRecord )
   {
     this.elasticSearchRecord = elasticSearchRecord;
   }

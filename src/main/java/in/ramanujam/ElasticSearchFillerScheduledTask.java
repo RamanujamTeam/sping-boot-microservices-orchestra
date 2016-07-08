@@ -1,7 +1,7 @@
 package in.ramanujam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import in.ramanujam.model.ElasticSearchRecord;
+import in.ramanujam.model.MinerRecord;
 import in.ramanujam.properties.ElasticSearchProperties;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class ElasticSearchFillerScheduledTask
@@ -41,14 +43,15 @@ public class ElasticSearchFillerScheduledTask
     public void runWithDelay() throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
-        ElasticSearchRecord[] esRecords = mapper.readValue( elasticSearchFile.getFile(), ElasticSearchRecord[].class );
+        MinerRecord[] esRecords = mapper.readValue( elasticSearchFile.getFile(), MinerRecord[].class );
+        List<MinerRecord> minerRecords = new ArrayList<>( Arrays.asList( esRecords ) );
         int lastIndex = Math.min( curPos + 100, 1000 );
         while( curPos < lastIndex )
         {
             curPos++;
             client.prepareIndex( new ElasticSearchProperties().getElasticsearchIndexName(),
-                                 new ElasticSearchProperties().getElasticsearchTypeName(), String.valueOf( esRecords[curPos-1].getId() ))
-                    .setSource( mapper.writeValueAsBytes( esRecords[ curPos-1] ) ).get();
+                                 new ElasticSearchProperties().getElasticsearchTypeName(), String.valueOf( minerRecords.get( curPos-1 ).getId() ))
+                    .setSource( mapper.writeValueAsBytes( minerRecords.get( curPos - 1 ) ) ).get();
 
         }
     }

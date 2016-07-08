@@ -1,8 +1,8 @@
 package in.ramanujam;
 
 import com.mongodb.*;
-import in.ramanujam.model.ElasticSearchRecord;
-import in.ramanujam.model.RedisRecord;
+import in.ramanujam.model.MinerRecord;
+import in.ramanujam.model.BitcoinRecord;
 import in.ramanujam.properties.MongoDBProperties;
 import in.ramanujam.properties.RedisProperties;
 import in.ramanujam.service.TestUtil;
@@ -20,8 +20,8 @@ public class MongoAggregationTest
   {
     DBCollection collection = setupMongoCollection();
 
-    RedisRecord redisRecord = TestUtil.generateRedisRecord( 1002 );
-    ElasticSearchRecord esRecord = TestUtil.generateElasticSearchRecord( 1002 );
+    BitcoinRecord redisRecord = TestUtil.generateRedisRecord( 1002 );
+    MinerRecord esRecord = TestUtil.generateElasticSearchRecord( 1002 );
 
     try
     {
@@ -48,12 +48,12 @@ public class MongoAggregationTest
     return db.getCollection( properties.getMongoCollection() );
   }
 
-  private static WriteResult writeRedisRecordToMongo( RedisRecord redisRecord, DBCollection collection )
+  private static WriteResult writeRedisRecordToMongo( BitcoinRecord redisRecord, DBCollection collection )
   {
     BasicDBObject document = new BasicDBObject();
 
     BasicDBObject values = new BasicDBObject()
-            .append( "bitcoin", redisRecord.getBitcoin() );
+            .append( "bitcoin", redisRecord.getKey() );
 
     document.append( "$set", values );
 
@@ -62,7 +62,7 @@ public class MongoAggregationTest
     return collection.update( searchQuery, document, true, false );
   }
 
-  private static WriteResult writeESRecordToMongo( ElasticSearchRecord esRecord, DBCollection collection  )
+  private static WriteResult writeESRecordToMongo( MinerRecord esRecord, DBCollection collection  )
   {
     BasicDBObject document = new BasicDBObject();
 
@@ -80,14 +80,14 @@ public class MongoAggregationTest
     return collection.update( searchQuery, document, true, false );
   }
 
-  private static Long removeRecordFromRedis( RedisRecord redisRecord )
+  private static Long removeRecordFromRedis( BitcoinRecord redisRecord )
   {
     Jedis jedis = new Jedis( new RedisProperties().getRedisContainerHost(),
                              new RedisProperties().getRedisContainerPort());
     return jedis.hdel( "bitcoins", String.valueOf( redisRecord.getId() ) );
   }
 
-  private static Long removeRecordFromES( ElasticSearchRecord esRecord )
+  private static Long removeRecordFromES( MinerRecord esRecord )
   {
     return 42L; // TODO: replace stub
   }

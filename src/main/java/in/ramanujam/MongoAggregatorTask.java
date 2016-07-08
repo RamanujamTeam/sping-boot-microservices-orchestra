@@ -3,9 +3,9 @@ package in.ramanujam;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
-import in.ramanujam.model.ElasticSearchRecord;
+import in.ramanujam.model.MinerRecord;
 import in.ramanujam.model.MongoDBRecord;
-import in.ramanujam.model.RedisRecord;
+import in.ramanujam.model.BitcoinRecord;
 import in.ramanujam.properties.MongoDBProperties;
 import in.ramanujam.service.MongoAggregator;
 import in.ramanujam.service.MongoDBRecordsMerger;
@@ -17,7 +17,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -51,8 +50,8 @@ public class MongoAggregatorTask
 
     private List<MongoDBRecord> retrieveMongoDBRecords()
     {
-        List<RedisRecord> redisRecords = RedisRetriever.retrieveAllRecords();
-        List<ElasticSearchRecord> elasticSearchRecords = ElasticSearchRetriever.retrieveAllRecords();
+        List<BitcoinRecord> redisRecords = RedisRetriever.retrieveAllRecords();
+        List<MinerRecord> elasticSearchRecords = ElasticSearchRetriever.retrieveAllRecords();
         return MongoDBRecordsMerger.merge( redisRecords, elasticSearchRecords );
     }
 }

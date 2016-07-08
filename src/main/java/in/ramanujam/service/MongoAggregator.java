@@ -23,7 +23,7 @@ public class MongoAggregator
     BasicDBObject document = new BasicDBObject();
 
     BasicDBObject values = new BasicDBObject()
-            .append( "bitcoin", record.getRedisRecord().getBitcoin() )
+            .append( "bitcoin", record.getRedisRecord().getKey() )
             .append( "gender", record.getElasticSearchRecord().getGender() )
             .append( "first_name", record.getElasticSearchRecord().getFirstName() )
             .append( "last_name", record.getElasticSearchRecord().getLastName() )

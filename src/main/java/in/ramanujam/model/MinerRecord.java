@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Date: 01.07.2016
  * Time: 17:30
  */
-public class ElasticSearchRecord
+public class MinerRecord
 {
   @JsonProperty
   private int id;
@@ -23,12 +23,12 @@ public class ElasticSearchRecord
   @JsonProperty("ip_address")
   private String ipAddress;
 
-  public ElasticSearchRecord()
+  public MinerRecord()
   {
   }
 
-  public ElasticSearchRecord( int id, String gender, String firstName, String lastName, String email,
-                              String ipAddress )
+  public MinerRecord( int id, String gender, String firstName, String lastName, String email,
+                      String ipAddress )
   {
     this.id = id;
     this.gender = gender;

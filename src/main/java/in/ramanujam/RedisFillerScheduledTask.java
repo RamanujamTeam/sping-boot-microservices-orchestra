@@ -1,6 +1,8 @@
 package in.ramanujam;
 
+import in.ramanujam.model.BitcoinRecord;
 import in.ramanujam.properties.RedisProperties;
+import in.ramanujam.service.filler.RedisFiller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,9 +31,7 @@ public class RedisFillerScheduledTask {
     // TODO: add StAX
     @Scheduled(fixedDelay = 1000) // TODO: add batching
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
-        RedisProperties redisProperties = new RedisProperties();
 
-        Jedis jedis = new Jedis( redisProperties.getRedisContainerHost(), redisProperties.getRedisContainerExternalPort());
         File fXmlFile = redisDataFile.getFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -40,11 +40,10 @@ public class RedisFillerScheduledTask {
         NodeList records = doc.getDocumentElement().getChildNodes();
 
         int lastIndex = Math.min( currentPosition + 100, records.getLength() );
-        while (currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
+        while ( currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
-            String bitcoin = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
-            currentPosition++;
-            jedis.hset( new RedisProperties().getRedisHashsetName(), id, bitcoin );
+            String key = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
+            RedisFiller.getInstance().addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
         }
     }
 }

@@ -1,6 +1,6 @@
 package in.ramanujam.service.retriever;
 
-import in.ramanujam.model.ElasticSearchRecord;
+import in.ramanujam.model.MinerRecord;
 import in.ramanujam.service.TestUtil;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class ElasticSearchRetriever
 {
-  public static List<ElasticSearchRecord> retrieveAllRecords()
+  public static List<MinerRecord> retrieveAllRecords()
   {
     return TestUtil.generateElasticSearchRecords( 1, 1000 ); // TODO: replace stub
   }

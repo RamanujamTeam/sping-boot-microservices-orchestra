@@ -1,8 +1,8 @@
 package in.ramanujam.service;
 
-import in.ramanujam.model.ElasticSearchRecord;
+import in.ramanujam.model.MinerRecord;
 import in.ramanujam.model.MongoDBRecord;
-import in.ramanujam.model.RedisRecord;
+import in.ramanujam.model.BitcoinRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ public class TestUtil // TODO: add automated tests!
 {
   public static MongoDBRecord generateMongoRecord()
   {
-    RedisRecord redisRecord = new RedisRecord( 1, "1PtEHHN1SLUACkRhyBADURZWQuTpX56HRo" );
-    ElasticSearchRecord elasticSearchRecord = new ElasticSearchRecord( 1, "Female", "Louise", "Matthews", "lmatthews0@ning.com", "73.145.90.254" );
+    BitcoinRecord redisRecord = new BitcoinRecord( 1, "1PtEHHN1SLUACkRhyBADURZWQuTpX56HRo" );
+    MinerRecord elasticSearchRecord = new MinerRecord( 1, "Female", "Louise", "Matthews", "lmatthews0@ning.com", "73.145.90.254" );
     return new MongoDBRecord( redisRecord, elasticSearchRecord );
   }
 
@@ -29,35 +29,35 @@ public class TestUtil // TODO: add automated tests!
     List<MongoDBRecord> records = new ArrayList<>( );
     for( int id = 1; id <= 1000; id++ )
     {
-      RedisRecord redisRecord = new RedisRecord( id, randomString() );
-      ElasticSearchRecord elasticSearchRecord = new ElasticSearchRecord( id, randomString(), randomString(), randomString(), randomEmail(), randomIP() );
+      BitcoinRecord redisRecord = new BitcoinRecord( id, randomString() );
+      MinerRecord elasticSearchRecord = new MinerRecord( id, randomString(), randomString(), randomString(), randomEmail(), randomIP() );
       MongoDBRecord mongoDBRecord = new MongoDBRecord( redisRecord, elasticSearchRecord );
       records.add( mongoDBRecord );
     }
     return records;
   }
 
-  public static RedisRecord generateRedisRecord( int id )
+  public static BitcoinRecord generateRedisRecord( int id )
   {
-    return new RedisRecord( id, randomString() );
+    return new BitcoinRecord( id, randomString() );
   }
 
-  public static List<RedisRecord> generateRedisRecords( int fromId, int toId )
+  public static List<BitcoinRecord> generateRedisRecords( int fromId, int toId )
   {
-    List<RedisRecord> records = new ArrayList<>( );
+    List<BitcoinRecord> records = new ArrayList<>( );
     for( int id = fromId; id <= toId; id++ )
       records.add( generateRedisRecord( id ) );
     return records;
   }
 
-  public static ElasticSearchRecord generateElasticSearchRecord( int id )
+  public static MinerRecord generateElasticSearchRecord( int id )
   {
-    return new ElasticSearchRecord( id, randomString(), randomString(), randomString(), randomEmail(), randomIP() );
+    return new MinerRecord( id, randomString(), randomString(), randomString(), randomEmail(), randomIP() );
   }
 
-  public static List<ElasticSearchRecord> generateElasticSearchRecords( int fromId, int toId )
+  public static List<MinerRecord> generateElasticSearchRecords( int fromId, int toId )
   {
-    List<ElasticSearchRecord> records = new ArrayList<>( );
+    List<MinerRecord> records = new ArrayList<>( );
     for( int id = fromId; id <= toId; id++ )
       records.add( generateElasticSearchRecord( id ) );
     return records;

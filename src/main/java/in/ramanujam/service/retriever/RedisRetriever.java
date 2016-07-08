@@ -1,6 +1,6 @@
 package in.ramanujam.service.retriever;
 
-import in.ramanujam.model.RedisRecord;
+import in.ramanujam.model.BitcoinRecord;
 import in.ramanujam.properties.RedisProperties;
 import redis.clients.jedis.Jedis;
 
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
  */
 public class RedisRetriever
 {
-  public static List<RedisRecord> retrieveAllRecords()
+  public static List<BitcoinRecord> retrieveAllRecords()
   {
     RedisProperties redisProperties = new RedisProperties();
     Jedis jedis = new Jedis( redisProperties.getRedisContainerHost(), redisProperties.getRedisContainerExternalPort());
 
     Map<String, String> redisRecordMap = jedis.hgetAll( redisProperties.getRedisHashsetName() );
     return redisRecordMap.entrySet().stream()
-            .map( entry -> new RedisRecord( Integer.parseInt( entry.getKey() ), entry.getValue() ) )
+            .map( entry -> new BitcoinRecord( Integer.parseInt( entry.getKey() ), entry.getValue() ) )
             .collect( Collectors.toList() );
   }
 }
