@@ -1,7 +1,7 @@
 package in.ramanujam.service;
 
 import in.ramanujam.model.MongoDBRecord;
-import in.ramanujam.service.aggregator.MongoAggregator;
+import in.ramanujam.service.aggregators.MongoAggregator;
 
 import java.util.List;
 

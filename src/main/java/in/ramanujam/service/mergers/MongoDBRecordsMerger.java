@@ -1,4 +1,4 @@
-package in.ramanujam.service;
+package in.ramanujam.service.mergers;
 
 import in.ramanujam.model.MinerRecord;
 import in.ramanujam.model.MongoDBRecord;

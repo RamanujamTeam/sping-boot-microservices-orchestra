@@ -1,8 +1,7 @@
 package in.ramanujam;
 
 import in.ramanujam.model.BitcoinRecord;
-import in.ramanujam.properties.RedisProperties;
-import in.ramanujam.service.filler.RedisFiller;
+import in.ramanujam.service.fillers.RedisFiller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import redis.clients.jedis.Jedis;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

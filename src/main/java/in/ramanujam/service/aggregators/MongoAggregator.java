@@ -1,4 +1,4 @@
-package in.ramanujam.service.aggregator;
+package in.ramanujam.service.aggregators;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoCollection;

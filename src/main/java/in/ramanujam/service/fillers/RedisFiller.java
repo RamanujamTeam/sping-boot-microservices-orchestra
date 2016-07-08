@@ -1,4 +1,4 @@
-package in.ramanujam.service.filler;
+package in.ramanujam.service.fillers;
 
 import in.ramanujam.model.BitcoinRecord;
 import in.ramanujam.properties.RedisProperties;
