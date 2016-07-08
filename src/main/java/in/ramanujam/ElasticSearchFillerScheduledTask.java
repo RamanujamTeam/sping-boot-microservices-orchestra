@@ -3,6 +3,7 @@ package in.ramanujam;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.ramanujam.model.MinerRecord;
 import in.ramanujam.properties.ElasticSearchProperties;
+import in.ramanujam.service.filler.ElasticSearchFiller;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -21,18 +22,6 @@ import java.util.List;
 @Component
 public class ElasticSearchFillerScheduledTask
 {
-    private static Client client;
-    static
-    {
-        try {
-            client = TransportClient.builder().build()
-                    .addTransportAddress(new InetSocketTransportAddress( InetAddress.getByName(
-                            new ElasticSearchProperties().getElasticsearchContainerHost() ),
-                            new ElasticSearchProperties().getElasticsearchContainerExternalPort()));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Value("elastic-data.json")
     private Resource elasticSearchFile;
@@ -48,11 +37,7 @@ public class ElasticSearchFillerScheduledTask
         int lastIndex = Math.min( curPos + 100, 1000 );
         while( curPos < lastIndex )
         {
-            curPos++;
-            client.prepareIndex( new ElasticSearchProperties().getElasticsearchIndexName(),
-                                 new ElasticSearchProperties().getElasticsearchTypeName(), String.valueOf( minerRecords.get( curPos-1 ).getId() ))
-                    .setSource( mapper.writeValueAsBytes( minerRecords.get( curPos - 1 ) ) ).get();
-
+            ElasticSearchFiller.getInstance().addMinerRecord( minerRecords.get( curPos++ ) );
         }
     }
 }

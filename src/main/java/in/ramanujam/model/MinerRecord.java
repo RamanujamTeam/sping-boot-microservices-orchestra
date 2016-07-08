@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class MinerRecord
 {
   @JsonProperty
-  private int id;
+  private Integer id;
   @JsonProperty
   private String gender;
   @JsonProperty("first_name")
@@ -27,7 +27,7 @@ public class MinerRecord
   {
   }
 
-  public MinerRecord( int id, String gender, String firstName, String lastName, String email,
+  public MinerRecord( Integer id, String gender, String firstName, String lastName, String email,
                       String ipAddress )
   {
     this.id = id;
@@ -38,12 +38,12 @@ public class MinerRecord
     this.ipAddress = ipAddress;
   }
 
-  public int getId()
+  public Integer getId()
   {
     return id;
   }
 
-  public void setId( int id )
+  public void setId( Integer id )
   {
     this.id = id;
   }
