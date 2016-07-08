@@ -1,10 +1,8 @@
 package in.ramanujam.service;
 
-import com.mongodb.*;
 import in.ramanujam.model.MongoDBRecord;
-import in.ramanujam.properties.MongoDBProperties;
+import in.ramanujam.service.aggregator.MongoAggregator;
 
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -17,23 +15,9 @@ public class MongoAggregatorMain
 {
   public static void main( String[] args )
   {
-    MongoClient mongo = null;
-    try
-    {
-      MongoDBProperties properties = new MongoDBProperties();
-      mongo = new MongoClient( properties.getMongoHost(), properties.getMongoPort() );
-      DB db = mongo.getDB( properties.getMongoDb() );
-
-      DBCollection collection = db.getCollection( properties.getMongoCollection() );
-
-      List<MongoDBRecord> records = TestUtil.generateMongoRecords();
-      MongoAggregator.aggregate( collection, records );
-    }
-    finally
-    {
-      if( mongo != null )
-        mongo.close();
-    }
+    List<MongoDBRecord> records = TestUtil.generateMongoRecords();
+    MongoAggregator.getInstance().aggregate( records );
+    MongoAggregator.getInstance().close();
   }
 
 

@@ -7,7 +7,7 @@ import in.ramanujam.model.MinerRecord;
 import in.ramanujam.model.MongoDBRecord;
 import in.ramanujam.model.BitcoinRecord;
 import in.ramanujam.properties.MongoDBProperties;
-import in.ramanujam.service.MongoAggregator;
+import in.ramanujam.service.aggregator.MongoAggregator;
 import in.ramanujam.service.MongoDBRecordsMerger;
 import in.ramanujam.service.retriever.ElasticSearchRetriever;
 import in.ramanujam.service.retriever.RedisRetriever;
@@ -29,23 +29,9 @@ public class MongoAggregatorTask
     @Scheduled(fixedDelay = 10000)
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
 
-        MongoClient mongo = null;
-        try
-        {
-            MongoDBProperties properties = new MongoDBProperties();
-            mongo = new MongoClient( properties.getMongoHost(), properties.getMongoPort() );
-            DB db = mongo.getDB( properties.getMongoDb() );
-
-            DBCollection collection = db.getCollection( properties.getMongoCollection() );
-
-            List<MongoDBRecord> records = retrieveMongoDBRecords();
-            MongoAggregator.aggregate( collection, records );
-        }
-        finally
-        {
-            if( mongo != null )
-                mongo.close();
-        }
+        List<MongoDBRecord> records = retrieveMongoDBRecords();
+        MongoAggregator.getInstance().aggregate( records );
+        MongoAggregator.getInstance().close();
     }
 
     private List<MongoDBRecord> retrieveMongoDBRecords()
