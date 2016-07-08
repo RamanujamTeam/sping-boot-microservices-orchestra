@@ -1,7 +1,7 @@
-package in.ramanujam.service.fillers;
+package in.ramanujam.services.redisfiller;
 
-import in.ramanujam.model.BitcoinRecord;
-import in.ramanujam.properties.RedisProperties;
+import in.ramanujam.common.model.BitcoinRecord;
+import in.ramanujam.common.properties.RedisProperties;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;

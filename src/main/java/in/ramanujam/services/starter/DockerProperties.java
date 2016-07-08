@@ -1,4 +1,6 @@
-package in.ramanujam.properties;
+package in.ramanujam.services.starter;
+
+import in.ramanujam.common.properties.AbstractProperties;
 
 /**
  * Created with IntelliJ IDEA.

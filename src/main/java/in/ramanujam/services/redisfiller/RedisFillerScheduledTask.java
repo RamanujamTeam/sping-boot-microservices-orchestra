@@ -1,7 +1,6 @@
-package in.ramanujam;
+package in.ramanujam.services.redisfiller;
 
-import in.ramanujam.model.BitcoinRecord;
-import in.ramanujam.service.fillers.RedisFiller;
+import in.ramanujam.common.model.BitcoinRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;

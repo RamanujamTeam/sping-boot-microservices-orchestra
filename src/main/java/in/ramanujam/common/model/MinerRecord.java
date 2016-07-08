@@ -1,4 +1,4 @@
-package in.ramanujam.model;
+package in.ramanujam.common.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
