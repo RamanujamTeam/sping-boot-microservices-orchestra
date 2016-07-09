@@ -43,9 +43,10 @@ public class MinerRecord
     return id;
   }
 
-  public void setId( Integer id )
+  public MinerRecord setId( int id )
   {
     this.id = id;
+    return this;
   }
 
   public String getGender()
@@ -53,9 +54,10 @@ public class MinerRecord
     return gender;
   }
 
-  public void setGender( String gender )
+  public MinerRecord setGender( String gender )
   {
     this.gender = gender;
+    return this;
   }
 
   public String getFirstName()
@@ -63,9 +65,10 @@ public class MinerRecord
     return firstName;
   }
 
-  public void setFirstName( String firstName )
+  public MinerRecord setFirstName( String firstName )
   {
     this.firstName = firstName;
+    return this;
   }
 
   public String getLastName()
@@ -73,9 +76,10 @@ public class MinerRecord
     return lastName;
   }
 
-  public void setLastName( String lastName )
+  public MinerRecord setLastName( String lastName )
   {
     this.lastName = lastName;
+    return this;
   }
 
   public String getEmail()
@@ -83,9 +87,10 @@ public class MinerRecord
     return email;
   }
 
-  public void setEmail( String email )
+  public MinerRecord setEmail( String email )
   {
     this.email = email;
+    return this;
   }
 
   public String getIpAddress()
@@ -93,8 +98,22 @@ public class MinerRecord
     return ipAddress;
   }
 
-  public void setIpAddress( String ipAddress )
+  public MinerRecord setIpAddress( String ipAddress )
   {
     this.ipAddress = ipAddress;
+    return this;
+  }
+
+  @Override
+  public String toString()
+  {
+    return "MinerRecord{" +
+        "id=" + id +
+        ", gender='" + gender + '\'' +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", email='" + email + '\'' +
+        ", ipAddress='" + ipAddress + '\'' +
+        '}';
   }
 }
