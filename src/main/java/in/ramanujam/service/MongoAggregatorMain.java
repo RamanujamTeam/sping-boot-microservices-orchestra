@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MongoAggregatorMain
 {
-  public static void main( String[] args )
+  public static void main( String[] args ) throws UnknownHostException
   {
     List<MongoDBRecord> records = TestUtil.generateMongoRecords();
     MongoAggregator.getInstance().aggregate( records );
