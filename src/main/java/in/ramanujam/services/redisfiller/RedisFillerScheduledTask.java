@@ -38,6 +38,7 @@ public class RedisFillerScheduledTask {
 
         int lastIndex = Math.min( currentPosition + 100, records.getLength() );
         while ( currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
+            currentPosition++;
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
             String key = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
             RedisFiller.getInstance().addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
