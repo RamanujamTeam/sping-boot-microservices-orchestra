@@ -1,4 +1,4 @@
-package in.ramanujam.model;
+package in.ramanujam.common.model;
 
 /**
  * Created with IntelliJ IDEA.

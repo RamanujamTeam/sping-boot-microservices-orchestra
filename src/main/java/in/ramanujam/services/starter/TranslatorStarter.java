@@ -1,12 +1,12 @@
-package in.ramanujam;
+package in.ramanujam.services.starter;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
-import in.ramanujam.properties.ElasticSearchProperties;
-import in.ramanujam.properties.RedisProperties;
+import in.ramanujam.common.properties.ElasticSearchProperties;
+import in.ramanujam.common.properties.RedisProperties;
 
 /**
  * Created with IntelliJ IDEA.

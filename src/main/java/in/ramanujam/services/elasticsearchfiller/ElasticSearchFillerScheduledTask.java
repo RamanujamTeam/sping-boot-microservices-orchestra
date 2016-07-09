@@ -1,8 +1,7 @@
-package in.ramanujam;
+package in.ramanujam.services.elasticsearchfiller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import in.ramanujam.model.MinerRecord;
-import in.ramanujam.service.fillers.ElasticSearchFiller;
+import in.ramanujam.common.model.MinerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +15,6 @@ import java.util.List;
 @Component
 public class ElasticSearchFillerScheduledTask
 {
-
     @Value("elastic-data.json")
     private Resource elasticSearchFile;
 

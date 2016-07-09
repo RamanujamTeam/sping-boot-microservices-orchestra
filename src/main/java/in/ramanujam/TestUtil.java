@@ -1,8 +1,8 @@
-package in.ramanujam.service;
+package in.ramanujam;
 
-import in.ramanujam.model.MinerRecord;
-import in.ramanujam.model.MongoDBRecord;
-import in.ramanujam.model.BitcoinRecord;
+import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.common.model.MongoDBRecord;
+import in.ramanujam.common.model.BitcoinRecord;
 
 import java.util.ArrayList;
 import java.util.List;

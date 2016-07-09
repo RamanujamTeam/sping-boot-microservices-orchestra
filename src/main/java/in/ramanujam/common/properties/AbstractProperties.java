@@ -1,4 +1,4 @@
-package in.ramanujam.properties;
+package in.ramanujam.common.properties;
 
 import java.io.IOException;
 import java.io.InputStream;

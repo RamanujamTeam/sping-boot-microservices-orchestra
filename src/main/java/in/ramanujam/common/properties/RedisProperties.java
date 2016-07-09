@@ -1,4 +1,4 @@
-package in.ramanujam.properties;
+package in.ramanujam.common.properties;
 
 /**
  * Created with IntelliJ IDEA.

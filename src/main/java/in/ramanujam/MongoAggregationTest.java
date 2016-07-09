@@ -1,11 +1,10 @@
 package in.ramanujam;
 
 import com.mongodb.*;
-import in.ramanujam.model.MinerRecord;
-import in.ramanujam.model.BitcoinRecord;
-import in.ramanujam.properties.MongoDBProperties;
-import in.ramanujam.properties.RedisProperties;
-import in.ramanujam.service.TestUtil;
+import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.common.model.BitcoinRecord;
+import in.ramanujam.common.properties.MongoDBProperties;
+import in.ramanujam.common.properties.RedisProperties;
 import redis.clients.jedis.Jedis;
 
 import java.net.UnknownHostException;
@@ -13,7 +12,7 @@ import java.net.UnknownHostException;
 /**
  * Created by anatolii on 7/2/16.
  */
-public class MongoAggregationTest
+public class MongoAggregationTest // TODO: create 2 separate services from this task
 {
 
   public static void main( String[] args ) throws UnknownHostException

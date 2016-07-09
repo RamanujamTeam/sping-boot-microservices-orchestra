@@ -1,14 +1,16 @@
-package in.ramanujam;
+package in.ramanujam.services.redisfiller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/**
+ * @author Roma
+ */
 @SpringBootApplication
 @EnableScheduling
-public class ElasticSearchFillerMain
-{
+public class RedisFillerMain {
     public static void main(String[] args) {
-        SpringApplication.run( ElasticSearchFillerMain.class, args);
+        SpringApplication.run(RedisFillerMain.class, args);
     }
 }

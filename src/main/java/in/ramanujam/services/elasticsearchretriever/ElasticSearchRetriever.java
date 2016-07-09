@@ -1,7 +1,7 @@
-package in.ramanujam.service.retrievers;
+package in.ramanujam.services.elasticsearchretriever;
 
-import in.ramanujam.model.MinerRecord;
-import in.ramanujam.service.TestUtil;
+import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.TestUtil;
 
 import java.util.List;
 

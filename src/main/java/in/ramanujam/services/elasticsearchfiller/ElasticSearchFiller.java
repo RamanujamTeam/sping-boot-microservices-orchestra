@@ -1,9 +1,9 @@
-package in.ramanujam.service.fillers;
+package in.ramanujam.services.elasticsearchfiller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import in.ramanujam.model.MinerRecord;
-import in.ramanujam.properties.ElasticSearchProperties;
+import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.common.properties.ElasticSearchProperties;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
