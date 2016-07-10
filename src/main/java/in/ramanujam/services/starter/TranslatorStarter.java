@@ -5,8 +5,14 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
+import com.rabbitmq.client.*;
+import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RedisProperties;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,8 +22,24 @@ import in.ramanujam.common.properties.RedisProperties;
  */
 public class TranslatorStarter
 {
-  public static void main( String[] args )
+  private static final String QUEUE_NAME = "message";
+  private static boolean redisToMongoFinished = false;
+  private static boolean elasticToMongoFinished = false;
+
+  public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException
   {
+
+
+
+
+
+
+
+
+
+
+
+
     DockerClient dockerClient = DockerClientFactory.getClient();
 
     CreateContainerResponse redisContainer = getRedisContainer( dockerClient );
@@ -27,14 +49,50 @@ public class TranslatorStarter
     tryStartContainer( dockerClient, redisContainer );
     tryStartContainer( dockerClient, ESContainer );
 
-    dockerClient.waitContainerCmd(redisContainer.getId())
-            .exec( new WaitContainerResultCallback() )
-            .awaitStatusCode();
 
-    dockerClient.removeContainerCmd( redisContainer.getId() ).exec(); // TODO: use killContainerCmd
-    dockerClient.removeContainerCmd( ESContainer.getId() ).exec();
-//    dockerClient.stopContainerCmd(redisContainer.getId()).exec();
-//    dockerClient.stopContainerCmd(ESContainer.getId()).exec();
+
+
+
+
+
+
+
+    // TODO: run rabbitmq in docker!
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setHost( "localhost" ); // TODO: exctract to properties
+    factory.setPort( 5672 ); // TODO: what port?
+    Connection connection = factory.newConnection();
+    Channel channel = connection.createChannel();
+
+    channel.queueDeclare( QUEUE_NAME, false, false, false, null );
+
+    Consumer consumer = new DefaultConsumer( channel) { // TODO: replace it with lambda:
+      @Override
+      public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+              throws IOException
+      {
+        String message = new String(body, "UTF-8");
+        if( "ElasticSearchToMongoFinished".equals( message ) ) // TODO: excract into properties
+        {
+          elasticToMongoFinished = true;
+        }
+
+        if( "RedisToMongoFinished".equals( message ) ) // TODO: excract into properties
+        {
+          redisToMongoFinished = true;
+        }
+      }
+    };
+
+    channel.basicConsume( QUEUE_NAME, true, consumer );
+
+    while( !( redisToMongoFinished && elasticToMongoFinished ) )
+    {
+      Thread.sleep( 2000 );
+    }
+    closeConnection( channel, connection );
+    dockerClient.stopContainerCmd(redisContainer.getId()).exec();
+    dockerClient.stopContainerCmd(ESContainer.getId()).exec();
   }
 
   private static void tryStartContainer( DockerClient dockerClient, CreateContainerResponse container )
@@ -81,5 +139,22 @@ public class TranslatorStarter
             .withExposedPorts(exposedPort)
             .withPortBindings( portBinding)
             .exec();
+  }
+
+
+  private static void closeConnection( Channel channel, Connection connection ) throws IOException // TODO: hide this method
+  {
+    try
+    {
+      channel.close();
+    }
+    catch( TimeoutException e )
+    {
+      throw new RuntimeException( e );
+    }
+    finally
+    {
+      connection.close();
+    }
   }
 }

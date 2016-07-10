@@ -1,5 +1,6 @@
 package in.ramanujam.services.redisfiller;
 
+import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;

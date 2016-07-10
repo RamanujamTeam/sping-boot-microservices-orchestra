@@ -1,6 +1,7 @@
 package in.ramanujam.services.elasticsearchtomongo;
 
 import in.ramanujam.common.MongoUtils;
+import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.MinerRecord;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,5 +19,8 @@ public class ElasticSearchToMongoScheduledTask
         {
             ElasticSearchToMongoService.getInstance().moveRecordFromElasticSearchToMongo( esRecord, MongoUtils.getCollection() );
         }
+
+        // TODO: HOW DO WE KNOW THAT IT IS FINISHED?? MAY be put some info in ES?
+        MessageBus.getInstance().sendMessage( "ElasticSearchToMongoFinished" );
     }
 }

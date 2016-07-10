@@ -1,6 +1,7 @@
 package in.ramanujam.services.redistomongo;
 
 import in.ramanujam.common.MongoUtils;
+import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,5 +19,8 @@ public class RedisToMongoScheduledTask
         {
             RedisToMongoService.moveRecordFromRedisToMongo( bitcoinRecord, MongoUtils.getCollection() );
         }
+
+        // TODO: how do we know if there are no more records? Maybe put some info in redis?
+        MessageBus.getInstance().sendMessage( "RedisToMongoFinished" );
     }
 }
