@@ -14,29 +14,13 @@ import java.util.List;
  */
 public class RedisFiller
 {
-  private static RedisFiller instance = new RedisFiller();
-  private Jedis jedis;
-  private String bitcoinCollectionName;
-
-  public static RedisFiller getInstance()
+  private static int count = 0;
+  public static void addBitcoin( BitcoinRecord bitcoin )
   {
-    return instance;
-  }
-
-  private RedisFiller()
-  {
-    RedisProperties redisProperties = new RedisProperties();
-    bitcoinCollectionName = redisProperties.getRedisHashsetName();
-    jedis = new Jedis( redisProperties.getRedisContainerHost(), redisProperties.getRedisContainerExternalPort());
-  }
-
-  public void addBatch( List<BitcoinRecord> bitcoins )
-  {
-    bitcoins.stream().forEach( this::addBitcoin );
-  }
-
-  public void addBitcoin( BitcoinRecord bitcoin )
-  {
-    jedis.hset( bitcoinCollectionName, bitcoin.getId().toString(), bitcoin.getKey() );
+    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
+                             RedisProperties.getInstance().getRedisContainerExternalPort());
+    jedis.hset( RedisProperties.getInstance().getRedisHashsetName(), bitcoin.getId().toString(), bitcoin.getKey() );
+    jedis.close();
+    System.out.println( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
   }
 }

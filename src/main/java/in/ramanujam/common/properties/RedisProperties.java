@@ -15,9 +15,16 @@ public class RedisProperties extends AbstractProperties
   private static final String REDIS_HASHSET_NAME = "redis.hashset.name";
   private static final String CONFIG_FILE = "redis.properties";
 
-  public RedisProperties()
+  private static RedisProperties instance = new RedisProperties();
+
+  private RedisProperties()
   {
     load();
+  }
+
+  public static RedisProperties getInstance()
+  {
+    return instance;
   }
 
   public String getRedisContainerName()

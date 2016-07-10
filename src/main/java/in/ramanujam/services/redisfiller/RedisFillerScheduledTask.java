@@ -26,9 +26,9 @@ public class RedisFillerScheduledTask {
 
     private int currentPosition = 1;
     // TODO: add StAX
-    @Scheduled(fixedDelay = 1000) // TODO: add batching
+    @Scheduled(fixedDelay = 1000) // TODO: 30 secs
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
-
+// TODO: add batching
         File fXmlFile = redisDataFile.getFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -38,10 +38,10 @@ public class RedisFillerScheduledTask {
 
         int lastIndex = Math.min( currentPosition + 100, records.getLength() );
         while ( currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
-            currentPosition++;
             String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
             String key = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
-            RedisFiller.getInstance().addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
+            RedisFiller.addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
+            currentPosition++;
         }
     }
 }

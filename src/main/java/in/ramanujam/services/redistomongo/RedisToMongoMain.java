@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearchfiller;
+package in.ramanujam.services.redistomongo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,9 +6,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ElasticSearchFillerMain
+public class RedisToMongoMain
 {
     public static void main(String[] args) {
-        SpringApplication.run( ElasticSearchFillerMain.class, args);
+        SpringApplication.run( RedisToMongoMain.class, args);
     }
 }
