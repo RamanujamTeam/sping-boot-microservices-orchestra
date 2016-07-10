@@ -23,6 +23,7 @@ public class ElasticSearchFiller
   private Client client;
   private final String index;
   private final String type;
+  private static int count = 0;
 
   private ElasticSearchFiller()
   {
@@ -52,5 +53,6 @@ public class ElasticSearchFiller
     ObjectMapper mapper = new ObjectMapper();
     client.prepareIndex( index, type, minerRecord.getId().toString() )
             .setSource( mapper.writeValueAsBytes( minerRecord ) ).get();
+    System.out.println( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
   }
 }

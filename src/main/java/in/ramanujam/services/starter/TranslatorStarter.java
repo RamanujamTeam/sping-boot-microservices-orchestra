@@ -54,12 +54,10 @@ public class TranslatorStarter
 
   private static CreateContainerResponse getRedisContainer( DockerClient dockerClient )
   {
-    RedisProperties properties = new RedisProperties();
-
-    return createContainer(dockerClient, properties.getRedisContainerPort(),
-                           properties.getRedisContainerHost(),
-                           properties.getRedisContainerExternalPort(),
-                           properties.getRedisContainerName() );
+    return createContainer(dockerClient, RedisProperties.getInstance().getRedisContainerPort(),
+                           RedisProperties.getInstance().getRedisContainerHost(),
+                           RedisProperties.getInstance().getRedisContainerExternalPort(),
+                           RedisProperties.getInstance().getRedisContainerName() );
   }
 
   private static CreateContainerResponse getElasticSearchContainer( DockerClient dockerClient )

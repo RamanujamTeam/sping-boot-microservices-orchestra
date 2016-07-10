@@ -2,6 +2,8 @@ package in.ramanujam.common.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Map;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Denys Konakhevych
@@ -25,6 +27,16 @@ public class MinerRecord
 
   public MinerRecord()
   {
+  }
+
+  public MinerRecord( Map map )
+  {
+    this.id = (Integer) map.get( "id" );
+    this.gender = (String) map.get( "gender" );
+    this.firstName = (String) map.get( "first_name" );
+    this.lastName = (String) map.get( "last_name" );
+    this.email = (String) map.get( "email" );
+    this.ipAddress = (String) map.get( "ip_address" );
   }
 
   public MinerRecord( Integer id, String gender, String firstName, String lastName, String email,
