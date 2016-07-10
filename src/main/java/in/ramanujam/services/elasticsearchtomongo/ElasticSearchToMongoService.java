@@ -88,7 +88,7 @@ public class ElasticSearchToMongoService
               .actionGet();
     }
     catch( IndexNotFoundException e ){return;}
-    System.out.println( "ElasticSearchToMongo :: Removed from Redis :: Id = " + record.getId() + " count = " + ++removeCount );
+    System.out.println( "ElasticSearchToMongo :: Removed from ElasticSearch :: Id = " + record.getId() + " count = " + ++removeCount );
   }
 
   public void moveRecordFromElasticSearchToMongo( MinerRecord minerRecord, DBCollection collection )
@@ -118,5 +118,20 @@ public class ElasticSearchToMongoService
     WriteResult result = collection.update( searchQuery, document, true, false );
     System.out.println( "ElasticSearchToMongo :: Wrote to Mongo :: Id = " + esRecord.getId() + " count = " + ++writeCount ); // TODO: can we replace it with Spring AOP?
     return result;
+  }
+
+  public Boolean isElasticSearchFillerFinished()
+  {
+    try
+    {
+      SearchResponse response = client.prepareSearch( index )
+              .setTypes( "isFinished" ).setFrom(0).setSize(1)
+              .execute().actionGet();
+      return (Boolean) response.getHits().getAt( 0 ).getSource().get( "isFinished" ); // TODO: exctract in properties
+    }
+    catch( IndexNotFoundException e )
+    {
+      return false;
+    }
   }
 }

@@ -3,6 +3,7 @@ package in.ramanujam.common.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created with IntelliJ IDEA.
@@ -127,5 +128,27 @@ public class MinerRecord
         ", email='" + email + '\'' +
         ", ipAddress='" + ipAddress + '\'' +
         '}';
+  }
+
+  @Override
+  public boolean equals( Object o )
+  {
+    if( this == o )
+      return true;
+    if( o == null || getClass() != o.getClass() )
+      return false;
+    MinerRecord that = (MinerRecord) o;
+    return Objects.equals( id, that.id ) &&
+            Objects.equals( gender, that.gender ) &&
+            Objects.equals( firstName, that.firstName ) &&
+            Objects.equals( lastName, that.lastName ) &&
+            Objects.equals( email, that.email ) &&
+            Objects.equals( ipAddress, that.ipAddress );
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return Objects.hash( id, gender, firstName, lastName, email, ipAddress );
   }
 }

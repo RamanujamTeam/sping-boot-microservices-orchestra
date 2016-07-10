@@ -23,4 +23,12 @@ public class RedisFiller
     jedis.close();
     System.out.println( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
   }
+
+  public static void writeIsFinished( boolean isFinished )
+  {
+    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
+                             RedisProperties.getInstance().getRedisContainerExternalPort());
+    jedis.set( "redis-filler-finished", String.valueOf( isFinished ) ); // TODO: exctract into properties
+    jedis.close();
+  }
 }

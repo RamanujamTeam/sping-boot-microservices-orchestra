@@ -71,4 +71,13 @@ public class RedisToMongoService
     System.out.println( "RedisToMongo :: Wrote to Mongo :: Id = " + redisRecord.getId() + " count = " + ++writeCount );
     return result;
   }
+
+  public static Boolean isRedisFillerFinished()
+  {
+    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
+                             RedisProperties.getInstance().getRedisContainerExternalPort() );
+    String isRedisFillerFinished = jedis.get( "redis-filler-finished" );
+    jedis.close();
+    return Boolean.valueOf( isRedisFillerFinished );
+  }
 }

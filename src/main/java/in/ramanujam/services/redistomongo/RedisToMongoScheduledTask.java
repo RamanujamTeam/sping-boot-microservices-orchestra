@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class RedisToMongoScheduledTask
@@ -15,12 +16,13 @@ public class RedisToMongoScheduledTask
     @Scheduled(fixedDelay = 1000)
     public void runWithDelay() throws IOException
     {
-        for( BitcoinRecord bitcoinRecord : RedisToMongoService.retrieveAllRecords() )
+        List<BitcoinRecord> records = RedisToMongoService.retrieveAllRecords();
+        for( BitcoinRecord bitcoinRecord : records )
         {
             RedisToMongoService.moveRecordFromRedisToMongo( bitcoinRecord, MongoUtils.getCollection() );
         }
 
-        // TODO: how do we know if there are no more records? Maybe put some info in redis?
-        MessageBus.getInstance().sendMessage( "RedisToMongoFinished" );
+        if( records.size() == 0 && RedisToMongoService.isRedisFillerFinished() )
+            MessageBus.getInstance().sendMessage( "RedisToMongoFinished" );
     }
 }

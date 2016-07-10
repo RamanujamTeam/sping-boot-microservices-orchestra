@@ -1,6 +1,5 @@
 package in.ramanujam.services.redisfiller;
 
-import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -25,7 +24,7 @@ public class RedisFillerScheduledTask {
     @Value("redis-data.xml")
     private Resource redisDataFile;
 
-    private int currentPosition = 1;
+    private int curPos = 1;
     // TODO: add StAX
     @Scheduled(fixedDelay = 1000) // TODO: 30 secs
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
@@ -37,12 +36,17 @@ public class RedisFillerScheduledTask {
 
         NodeList records = doc.getDocumentElement().getChildNodes();
 
-        int lastIndex = Math.min( currentPosition + 100, records.getLength() );
-        while ( currentPosition < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
-            String id = records.item(currentPosition).getChildNodes().item(0).getChildNodes().item(0).getNodeValue();
-            String key = records.item(currentPosition).getChildNodes().item(1).getChildNodes().item(0).getNodeValue();
+        int lastIndex = Math.min( curPos + 100, records.getLength() );
+        while ( curPos < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
+            String id = records.item( curPos ).getChildNodes().item( 0).getChildNodes().item( 0).getNodeValue();
+            String key = records.item( curPos ).getChildNodes().item( 1).getChildNodes().item( 0).getNodeValue();
             RedisFiller.addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
-            currentPosition++;
+            curPos++;
+        }
+
+        if( curPos >= records.getLength() )
+        {
+            RedisFiller.writeIsFinished( true );
         }
     }
 }

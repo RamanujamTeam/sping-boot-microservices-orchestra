@@ -12,5 +12,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class RedisFillerMain {
     public static void main(String[] args) {
         SpringApplication.run(RedisFillerMain.class, args);
+        RedisFiller.writeIsFinished( false );
     }
 }

@@ -2,6 +2,7 @@ package in.ramanujam.services.elasticsearchfiller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.services.redisfiller.RedisFiller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,11 +26,16 @@ public class ElasticSearchFillerScheduledTask
     {
         ObjectMapper mapper = new ObjectMapper();
         MinerRecord[] esRecords = mapper.readValue( elasticSearchFile.getFile(), MinerRecord[].class ); // TODO: can we improve this logic?
-        List<MinerRecord> minerRecords = new ArrayList<>( Arrays.asList( esRecords ) );
-        int lastIndex = Math.min( curPos + 100, minerRecords.size() + 1 );
+        List<MinerRecord> records = new ArrayList<>( Arrays.asList( esRecords ) );
+        int lastIndex = Math.min( curPos + 100, records.size() + 1 );
         while( curPos < lastIndex )
         {
-            ElasticSearchFiller.getInstance().addMinerRecord( minerRecords.get( curPos++ - 1 ) );
+            ElasticSearchFiller.getInstance().addMinerRecord( records.get( curPos++ - 1 ) );
+        }
+
+        if( curPos >= records.size() )
+        {
+            ElasticSearchFiller.getInstance().writeIsFinished( true );
         }
     }
 }

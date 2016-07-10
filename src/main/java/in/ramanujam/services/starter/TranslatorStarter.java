@@ -56,7 +56,6 @@ public class TranslatorStarter
 
 
 
-
     // TODO: run rabbitmq in docker!
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost( "localhost" ); // TODO: exctract to properties
