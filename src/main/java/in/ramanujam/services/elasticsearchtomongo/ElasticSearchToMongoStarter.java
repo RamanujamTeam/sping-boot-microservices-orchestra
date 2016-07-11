@@ -2,13 +2,21 @@ package in.ramanujam.services.elasticsearchtomongo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ElasticSearchToMongoMain
+public class ElasticSearchToMongoStarter
 {
+    private static ConfigurableApplicationContext context;
+
     public static void main(String[] args) {
-        SpringApplication.run( ElasticSearchToMongoMain.class, args);
+        context = SpringApplication.run( ElasticSearchToMongoStarter.class, args);
+    }
+
+    public static void shutdown()
+    {
+        context.close();
     }
 }

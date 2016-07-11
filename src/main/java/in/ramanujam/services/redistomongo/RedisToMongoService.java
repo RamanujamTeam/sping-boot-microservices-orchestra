@@ -42,7 +42,7 @@ public class RedisToMongoService
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort());
-    jedis.hdel( "bitcoins", String.valueOf( redisRecord.getId() ) );
+    jedis.hdel( "bitcoins", String.valueOf( redisRecord.getId() ) ); // TODO: extract to properties
     jedis.close();
     System.out.println( "RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount );
   }
@@ -62,7 +62,7 @@ public class RedisToMongoService
     BasicDBObject document = new BasicDBObject();
 
     BasicDBObject values = new BasicDBObject()
-            .append( "bitcoin", redisRecord.getKey() );
+            .append( "bitcoin", redisRecord.getKey() ); // TODO: extract to properties
 
     document.append( "$set", values );
 
@@ -76,7 +76,7 @@ public class RedisToMongoService
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort() );
-    String isRedisFillerFinished = jedis.get( "redis-filler-finished" );
+    String isRedisFillerFinished = jedis.get( RedisProperties.getInstance().getRedisIsFinishedKey() );
     jedis.close();
     return Boolean.valueOf( isRedisFillerFinished );
   }

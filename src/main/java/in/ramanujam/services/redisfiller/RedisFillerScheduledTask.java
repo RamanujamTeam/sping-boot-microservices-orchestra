@@ -26,7 +26,7 @@ public class RedisFillerScheduledTask {
 
     private int curPos = 1;
     // TODO: add StAX
-    @Scheduled(fixedDelay = 1000) // TODO: 30 secs
+    @Scheduled(fixedDelay = 100) // TODO: 30 secs
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
 // TODO: add batching
         File fXmlFile = redisDataFile.getFile();
@@ -47,6 +47,8 @@ public class RedisFillerScheduledTask {
         if( curPos >= records.getLength() )
         {
             RedisFiller.writeIsFinished( true );
+            System.out.println( "RedisFiller :: Successfully finished!");
+            RedisFillerStarter.shutdown();
         }
     }
 }

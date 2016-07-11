@@ -11,7 +11,7 @@ public class RabbitMQUtils
 {
   public static Connection getConnection() throws IOException, TimeoutException, InterruptedException
   {
-    Thread.sleep( 5000 ); // TODO: this is a stupid fix - connection factory throws exception if try to connect to docker container too promptly. We need a better solution than this :-)
+//    Thread.sleep( 5000 ); // TODO: this is a stupid fix - connection factory throws exception if try to connect to docker container too promptly. We need a better solution than this :-)
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost( RabbitMQProperties.getInstance().getRabbitMQContainerHost() );
     factory.setPort( RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort() );

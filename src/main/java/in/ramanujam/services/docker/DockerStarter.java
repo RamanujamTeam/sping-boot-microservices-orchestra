@@ -1,20 +1,17 @@
-package in.ramanujam.services.starter;
+package in.ramanujam.services.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
-import com.github.dockerjava.core.command.WaitContainerResultCallback;
 import com.rabbitmq.client.*;
 import in.ramanujam.common.RabbitMQUtils;
-import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -23,7 +20,7 @@ import java.util.concurrent.TimeoutException;
  * Date: 30.06.2016
  * Time: 22:13
  */
-public class TranslatorStarter
+public class DockerStarter
 {
   private static boolean redisToMongoFinished = false;
   private static boolean elasticToMongoFinished = false;
@@ -36,26 +33,26 @@ public class TranslatorStarter
     CreateContainerResponse ESContainer = getElasticSearchContainer( dockerClient );
     CreateContainerResponse rabbitMQContainer = getRabbitMQContainer( dockerClient );
 
-    tryStartContainer( dockerClient, redisContainer );
-    tryStartContainer( dockerClient, ESContainer );
-    tryStartContainer( dockerClient, rabbitMQContainer );
+    tryToStartContainer(dockerClient, redisContainer);
+    tryToStartContainer(dockerClient, ESContainer);
+    tryToStartContainer(dockerClient, rabbitMQContainer);
 
     Connection connection = RabbitMQUtils.getConnection();
     Channel channel = connection.createChannel();
     channel.queueDeclare( RabbitMQProperties.getInstance().getRabbitmqQueueName(), false, false, false, null );
 
-    Consumer consumer = new DefaultConsumer( channel) { // TODO: replace it with lambda:
+    Consumer consumer = new DefaultConsumer( channel) {
       @Override
       public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
               throws IOException
       {
         String message = new String(body, "UTF-8");
-        if( "ElasticSearchToMongoFinished".equals( message ) ) // TODO: excract into properties
+        if( ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey().equals(message) )
         {
           elasticToMongoFinished = true;
         }
 
-        if( "RedisToMongoFinished".equals( message ) ) // TODO: excract into properties
+        if( RedisProperties.getInstance().getRedisToMongoIsFinishedKey().equals(message) )
         {
           redisToMongoFinished = true;
         }
@@ -66,18 +63,21 @@ public class TranslatorStarter
 
     while( !( redisToMongoFinished && elasticToMongoFinished ) )
     {
-      Thread.sleep( 2000 );
+      Thread.sleep( 3000 );
     }
     closeConnection( channel, connection );
-    dockerClient.stopContainerCmd(redisContainer.getId()).exec();
-    dockerClient.stopContainerCmd(ESContainer.getId()).exec();
+
+    tryToStopContainer(dockerClient, redisContainer);
+    tryToStopContainer(dockerClient, ESContainer);
+    tryToStopContainer(dockerClient, rabbitMQContainer);
+    System.out.println( "DockerStarter :: Successfully finished!");
   }
 
-  private static void tryStartContainer( DockerClient dockerClient, CreateContainerResponse container )
+  private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container)
   {
     try
     {
-      dockerClient.startContainerCmd( container.getId() ).exec();
+      dockerClient.startContainerCmd(container.getId()).exec();
     }
     catch( Exception e )
     {
@@ -86,6 +86,15 @@ public class TranslatorStarter
       else
         throw e;
     }
+  }
+
+  private static void tryToStopContainer( DockerClient dockerClient, CreateContainerResponse container )
+  {
+    try
+    {
+      dockerClient.stopContainerCmd(container.getId()).exec();
+    }
+    catch( NotModifiedException e ){ }
   }
 
   private static CreateContainerResponse getRedisContainer( DockerClient dockerClient )

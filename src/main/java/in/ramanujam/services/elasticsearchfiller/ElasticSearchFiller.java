@@ -61,9 +61,9 @@ public class ElasticSearchFiller
   public void writeIsFinished( boolean isFinished ) throws JsonProcessingException
   {
     Map isFinishedMap = new HashMap<>();
-    isFinishedMap.put( "isFinished", isFinished ); // TODO : exctract into Properties
+    isFinishedMap.put( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished );
     ObjectMapper mapper = new ObjectMapper();
-    client.prepareIndex( index, "isFinished", "isFinished" )     // TODO : exctract into Properties
+    client.prepareIndex( index, ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() )
             .setSource( mapper.writeValueAsBytes( isFinishedMap ) ).get();
   }
 }

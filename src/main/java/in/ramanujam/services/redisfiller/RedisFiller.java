@@ -28,7 +28,7 @@ public class RedisFiller
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort());
-    jedis.set( "redis-filler-finished", String.valueOf( isFinished ) ); // TODO: exctract into properties
+    jedis.set( RedisProperties.getInstance().getRedisIsFinishedKey(), String.valueOf( isFinished ) );
     jedis.close();
   }
 }

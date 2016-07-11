@@ -125,9 +125,9 @@ public class ElasticSearchToMongoService
     try
     {
       SearchResponse response = client.prepareSearch( index )
-              .setTypes( "isFinished" ).setFrom(0).setSize(1)
+              .setTypes( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() ).setFrom(0).setSize(1)
               .execute().actionGet();
-      return (Boolean) response.getHits().getAt( 0 ).getSource().get( "isFinished" ); //TODO: there is an ArrayIndexOutOfBoundsException in the beginning. Stacktrace bellow // TODO: exctract in properties
+      return (Boolean) response.getHits().getAt( 0 ).getSource().get( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() ); //TODO: there is an ArrayIndexOutOfBoundsException in the beginning. Stacktrace bellow
     }
     catch( IndexNotFoundException e )
     {
