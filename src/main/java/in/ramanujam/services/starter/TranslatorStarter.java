@@ -6,11 +6,14 @@ import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
 import com.rabbitmq.client.*;
+import in.ramanujam.common.RabbitMQUtils;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
+import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
@@ -22,48 +25,24 @@ import java.util.concurrent.TimeoutException;
  */
 public class TranslatorStarter
 {
-  private static final String QUEUE_NAME = "message";
   private static boolean redisToMongoFinished = false;
   private static boolean elasticToMongoFinished = false;
 
   public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException
   {
-
-
-
-
-
-
-
-
-
-
-
-
     DockerClient dockerClient = DockerClientFactory.getClient();
 
     CreateContainerResponse redisContainer = getRedisContainer( dockerClient );
-
     CreateContainerResponse ESContainer = getElasticSearchContainer( dockerClient );
+    CreateContainerResponse rabbitMQContainer = getRabbitMQContainer( dockerClient );
 
     tryStartContainer( dockerClient, redisContainer );
     tryStartContainer( dockerClient, ESContainer );
+    tryStartContainer( dockerClient, rabbitMQContainer );
 
-
-
-
-
-
-
-
-    // TODO: run rabbitmq in docker!
-    ConnectionFactory factory = new ConnectionFactory();
-    factory.setHost( "localhost" ); // TODO: exctract to properties
-    factory.setPort( 5672 ); // TODO: what port?
-    Connection connection = factory.newConnection();
+    Connection connection = RabbitMQUtils.getConnection();
     Channel channel = connection.createChannel();
-
-    channel.queueDeclare( QUEUE_NAME, false, false, false, null );
+    channel.queueDeclare( RabbitMQProperties.getInstance().getRabbitmqQueueName(), false, false, false, null );
 
     Consumer consumer = new DefaultConsumer( channel) { // TODO: replace it with lambda:
       @Override
@@ -83,7 +62,7 @@ public class TranslatorStarter
       }
     };
 
-    channel.basicConsume( QUEUE_NAME, true, consumer );
+    channel.basicConsume( RabbitMQProperties.getInstance().getRabbitmqQueueName(), true, consumer );
 
     while( !( redisToMongoFinished && elasticToMongoFinished ) )
     {
@@ -125,6 +104,14 @@ public class TranslatorStarter
                            properties.getElasticsearchContainerHost(),
                            properties.getElasticsearchContainerExternalPort(),
                            properties.getElasticsearchContainerName() );
+  }
+
+  private static CreateContainerResponse getRabbitMQContainer( DockerClient dockerClient )
+  {
+    return createContainer( dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
+                            RabbitMQProperties.getInstance().getRabbitMQContainerHost(),
+                            RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort(),
+                            RabbitMQProperties.getInstance().getRabbitMQContainerName() );
   }
 
   private static CreateContainerResponse createContainer( final DockerClient dockerClient, final Integer port, final String host,

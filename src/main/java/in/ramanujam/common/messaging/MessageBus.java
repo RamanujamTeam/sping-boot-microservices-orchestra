@@ -3,6 +3,7 @@ package in.ramanujam.common.messaging;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import in.ramanujam.common.properties.RabbitMQProperties;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -15,7 +16,6 @@ import java.util.concurrent.TimeoutException;
  */
 public class MessageBus
 {
-  private static final String QUEUE_NAME = "message";
   private static final MessageBus instance = new MessageBus();
   private final Channel channel;
 
@@ -24,12 +24,12 @@ public class MessageBus
     try
     {
       ConnectionFactory factory = new ConnectionFactory();
-      factory.setHost( "localhost" ); // TODO: exctract to Properties
-      factory.setPort( 5672 );
+      factory.setHost( RabbitMQProperties.getInstance().getRabbitMQContainerHost() );
+      factory.setPort( RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort() );
       Connection connection = factory.newConnection();
       channel = connection.createChannel();
 
-      channel.queueDeclare( QUEUE_NAME, false, false, false, null );
+      channel.queueDeclare( RabbitMQProperties.getInstance().getRabbitmqQueueName(), false, false, false, null );
     }
     catch( TimeoutException | IOException e )
     {
@@ -46,7 +46,7 @@ public class MessageBus
   {
     try
     {
-      channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+      channel.basicPublish("", RabbitMQProperties.getInstance().getRabbitmqQueueName(), null, message.getBytes());
     }
     catch( IOException e )
     {
