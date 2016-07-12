@@ -1,4 +1,4 @@
-package in.ramanujam.common.util;
+package in.ramanujam.common;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;

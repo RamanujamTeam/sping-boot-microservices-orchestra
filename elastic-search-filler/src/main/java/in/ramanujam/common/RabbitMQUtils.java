@@ -1,4 +1,4 @@
-package in.ramanujam.common.util;
+package in.ramanujam.common;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;

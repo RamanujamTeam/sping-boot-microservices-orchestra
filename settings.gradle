@@ -1,0 +1,3 @@
+rootProject.name='translator-root'
+include 'elastic-search-filler'
+

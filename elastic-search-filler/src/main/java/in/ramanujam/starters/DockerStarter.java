@@ -6,7 +6,7 @@ import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.rabbitmq.client.*;
-import in.ramanujam.common.util.RabbitMQUtils;
+import in.ramanujam.common.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;

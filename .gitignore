@@ -1,1 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+.gradle/
+.idea/
+build/
+elastic-search-filler/build/
+gradle/
+gradlew*
+*.iml
