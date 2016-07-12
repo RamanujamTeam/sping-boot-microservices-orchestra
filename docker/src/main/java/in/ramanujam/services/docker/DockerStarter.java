@@ -1,4 +1,4 @@
-package in.ramanujam.starters;
+package in.ramanujam.services.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
@@ -6,21 +6,14 @@ import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.rabbitmq.client.*;
-import in.ramanujam.common.RabbitMQUtils;
+import in.ramanujam.common.messaging.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
-import in.ramanujam.services.docker.DockerClientFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 30.06.2016
- * Time: 22:13
- */
 public class DockerStarter
 {
   private static boolean redisToMongoFinished = false;

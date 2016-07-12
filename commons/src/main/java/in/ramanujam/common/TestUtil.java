@@ -1,4 +1,4 @@
-package in.ramanujam;
+package in.ramanujam.common;
 
 import in.ramanujam.common.model.MinerRecord;
 import in.ramanujam.common.model.MongoDBRecord;

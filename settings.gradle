@@ -1,5 +1,5 @@
 rootProject.name='translator-root'
 include 'elastic-search-filler'
 include 'commons'
-include 'messaging'
+include 'docker'
 

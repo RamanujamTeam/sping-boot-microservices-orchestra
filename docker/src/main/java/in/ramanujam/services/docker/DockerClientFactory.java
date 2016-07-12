@@ -5,12 +5,6 @@ import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import in.ramanujam.common.properties.DockerProperties;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 30.06.2016
- * Time: 22:49
- */
 public class DockerClientFactory
 {
   public static DockerClient getClient()
