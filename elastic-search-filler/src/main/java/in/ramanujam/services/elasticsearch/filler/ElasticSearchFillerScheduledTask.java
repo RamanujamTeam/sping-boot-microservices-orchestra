@@ -13,7 +13,7 @@ public class ElasticSearchFillerScheduledTask
     @Autowired
     ElasticSearchFiller filler;
 
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 100;
     private int curPos = 0;
 
     // TODO: how can we stop it from running after all records are persisted?
@@ -22,5 +22,12 @@ public class ElasticSearchFillerScheduledTask
     {
         filler.fillItems( curPos, PAGE_SIZE );
         curPos += PAGE_SIZE;
+
+        if( curPos >= 1000 )
+        {
+            ElasticSearchFiller.writeIsFinished( true );
+            System.out.println( "ElasticSearchFiller :: Successfully finished!");
+            ElasticSearchFillerStarter.shutdown();
+        }
     }
 }

@@ -25,9 +25,9 @@ import java.util.Map;
 public class ElasticSearchFiller
 {
   private static final Logger log = LoggerFactory.getLogger( ElasticSearchFiller.class );
-  private final Client client;
-  private final String index;
-  private final String type;
+  private static Client client = null;
+  private static String index = null;
+  private static String type = null;
 
   //debug
   private static int count = 0;
@@ -91,7 +91,7 @@ public class ElasticSearchFiller
     }
   }
 
-  public void writeIsFinished( boolean isFinished ) throws JsonProcessingException
+  public static void writeIsFinished( boolean isFinished ) throws JsonProcessingException
   {
     Map isFinishedMap = new HashMap<>();
     isFinishedMap.put( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished );
