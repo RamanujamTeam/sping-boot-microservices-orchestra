@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearchtomongo;
+package in.ramanujam.services.aggregators;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -25,9 +25,9 @@ import java.util.List;
  * Date: 01.07.2016
  * Time: 20:02
  */
-public class ElasticSearchToMongoService
+public class ElasticSearchAggregator
 {
-  private static ElasticSearchToMongoService instance = new ElasticSearchToMongoService();
+  private static ElasticSearchAggregator instance = new ElasticSearchAggregator();
   private Client client;
   private String index;
   private String type;
@@ -35,7 +35,7 @@ public class ElasticSearchToMongoService
   private static int removeCount = 0;
 
 
-  private ElasticSearchToMongoService()
+  private ElasticSearchAggregator()
   {
     ElasticSearchProperties elasticSearchProperties = new ElasticSearchProperties();
     index = elasticSearchProperties.getElasticsearchIndexName();
@@ -53,7 +53,7 @@ public class ElasticSearchToMongoService
     }
   }
 
-  public static ElasticSearchToMongoService getInstance()
+  public static ElasticSearchAggregator getInstance()
   {
     return instance;
   }

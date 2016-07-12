@@ -1,4 +1,4 @@
-package in.ramanujam.services.docker;
+package in.ramanujam.common.properties;
 
 import in.ramanujam.common.properties.AbstractProperties;
 

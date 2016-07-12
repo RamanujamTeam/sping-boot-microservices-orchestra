@@ -1,4 +1,4 @@
-package in.ramanujam.services.docker;
+package in.ramanujam.starters;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
@@ -10,6 +10,7 @@ import in.ramanujam.common.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
+import in.ramanujam.services.docker.DockerClientFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
