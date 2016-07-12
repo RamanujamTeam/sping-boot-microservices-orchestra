@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +60,8 @@ public class ElasticSearchFiller
   {
     ObjectMapper mapper = new ObjectMapper();
     client.prepareIndex( index, type, minerRecord.getId().toString() )
+            .setSource( mapper.writeValueAsBytes( minerRecord ) ).execute().actionGet();
+    System.out.println( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
         .setSource( mapper.writeValueAsBytes( minerRecord ) ).get();
     log.trace( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
   }
@@ -76,5 +80,14 @@ public class ElasticSearchFiller
     {
       throw new RuntimeException( e );
     }
+  }
+
+  public void writeIsFinished( boolean isFinished ) throws JsonProcessingException
+  {
+    Map isFinishedMap = new HashMap<>();
+    isFinishedMap.put( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished );
+    ObjectMapper mapper = new ObjectMapper();
+    client.prepareIndex( index, ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() )
+            .setSource( mapper.writeValueAsBytes( isFinishedMap ) ).get();
   }
 }
