@@ -4,8 +4,6 @@ import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.parsers.BitcoinsParser;
 import in.ramanujam.services.fillers.RedisFiller;
 import in.ramanujam.starters.RedisFillerStarter;
-import in.ramanujam.services.fillers.RedisFiller;
-import in.ramanujam.starters.RedisFillerStarter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
