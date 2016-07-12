@@ -10,6 +10,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -52,7 +54,16 @@ public class ElasticSearchFiller
   {
     ObjectMapper mapper = new ObjectMapper();
     client.prepareIndex( index, type, minerRecord.getId().toString() )
-            .setSource( mapper.writeValueAsBytes( minerRecord ) ).get();
+            .setSource( mapper.writeValueAsBytes( minerRecord ) ).execute().actionGet();
     System.out.println( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
+  }
+
+  public void writeIsFinished( boolean isFinished ) throws JsonProcessingException
+  {
+    Map isFinishedMap = new HashMap<>();
+    isFinishedMap.put( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished );
+    ObjectMapper mapper = new ObjectMapper();
+    client.prepareIndex( index, ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() )
+            .setSource( mapper.writeValueAsBytes( isFinishedMap ) ).get();
   }
 }

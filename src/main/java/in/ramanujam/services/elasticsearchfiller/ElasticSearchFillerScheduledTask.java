@@ -20,16 +20,23 @@ public class ElasticSearchFillerScheduledTask
 
     private int curPos = 1;
     // TODO: how can we stop it from running after all records are persisted?
-    @Scheduled(fixedDelay = 1000) // TODO: 30 secs
+    @Scheduled(fixedDelay = 50) // TODO: 30 secs
     public void runWithDelay() throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
         MinerRecord[] esRecords = mapper.readValue( elasticSearchFile.getFile(), MinerRecord[].class ); // TODO: can we improve this logic?
-        List<MinerRecord> minerRecords = new ArrayList<>( Arrays.asList( esRecords ) );
-        int lastIndex = Math.min( curPos + 100, minerRecords.size() + 1 );
+        List<MinerRecord> records = new ArrayList<>( Arrays.asList( esRecords ) );
+        int lastIndex = Math.min( curPos + 100, records.size() + 1 );
         while( curPos < lastIndex )
         {
-            ElasticSearchFiller.getInstance().addMinerRecord( minerRecords.get( curPos++ - 1 ) );
+            ElasticSearchFiller.getInstance().addMinerRecord( records.get( curPos++ - 1 ) );
+        }
+
+        if( curPos >= records.size() )
+        {
+            ElasticSearchFiller.getInstance().writeIsFinished( true );
+            System.out.println( "ElasticSearchFiller :: Successfully finished!");
+            ElasticSearchFillerStarter.shutdown();
         }
     }
 }
