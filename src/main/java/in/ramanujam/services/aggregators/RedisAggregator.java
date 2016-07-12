@@ -1,4 +1,4 @@
-package in.ramanujam.services.redistomongo;
+package in.ramanujam.services.aggregators;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * Date: 01.07.2016
  * Time: 19:56
  */
-public class RedisToMongoService
+public class RedisAggregator
 {
   private static int writeCount = 0;
   private static int removeCount = 0;
