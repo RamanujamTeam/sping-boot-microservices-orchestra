@@ -3,6 +3,7 @@ package in.ramanujam.services.docker;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
+import in.ramanujam.common.properties.DockerProperties;
 
 /**
  * Created with IntelliJ IDEA.

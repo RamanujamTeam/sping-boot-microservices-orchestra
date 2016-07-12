@@ -35,6 +35,10 @@ dependencies {
 	compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.3.3'
   	compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.2.2'
 	compile group: 'com.rabbitmq', name: 'amqp-client', version: '3.6.1'
+
+	//logging
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+	compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.21'
 }
 
 eclipse {

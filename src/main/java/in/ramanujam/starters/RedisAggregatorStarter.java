@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearchtomongo;
+package in.ramanujam.starters;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,14 +7,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ElasticSearchToMongoStarter
+public class RedisAggregatorStarter
 {
+
     private static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
-        context = SpringApplication.run( ElasticSearchToMongoStarter.class, args);
+        context = SpringApplication.run( RedisAggregatorStarter.class, args);
     }
-
     public static void shutdown()
     {
         context.close();

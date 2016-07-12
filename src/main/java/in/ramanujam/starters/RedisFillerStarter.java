@@ -1,21 +1,23 @@
-package in.ramanujam.services.elasticsearchfiller;
+package in.ramanujam.starters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import in.ramanujam.services.fillers.RedisFiller;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/**
+ * @author Roma
+ */
 @SpringBootApplication
 @EnableScheduling
-public class ElasticSearchFillerStarter
-{
+public class RedisFillerStarter {
+
     private static ConfigurableApplicationContext context;
 
-    public static void main(String[] args) throws JsonProcessingException
-    {
-        context = SpringApplication.run(ElasticSearchFillerStarter.class, args);
-        ElasticSearchFiller.getInstance().writeIsFinished( false );
+    public static void main(String[] args) {
+        context = SpringApplication.run(RedisFillerStarter.class, args);
+        RedisFiller.writeIsFinished( false );
     }
 
     public static void shutdown()

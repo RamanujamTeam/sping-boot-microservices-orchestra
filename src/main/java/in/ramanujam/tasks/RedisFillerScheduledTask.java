@@ -1,7 +1,9 @@
-package in.ramanujam.services.redisfiller;
+package in.ramanujam.tasks;
 
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.parsers.BitcoinsParser;
+import in.ramanujam.services.fillers.RedisFiller;
+import in.ramanujam.starters.RedisFillerStarter;
 import in.ramanujam.services.fillers.RedisFiller;
 import in.ramanujam.starters.RedisFillerStarter;
 import org.springframework.beans.factory.annotation.Value;
