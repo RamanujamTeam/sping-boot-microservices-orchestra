@@ -2,4 +2,6 @@ rootProject.name='translator-root'
 include 'elastic-search-filler'
 include 'commons'
 include 'docker'
+include 'redis-filler'
+include 'redis-aggregator'
 

@@ -1,10 +1,10 @@
 package in.ramanujam.tasks;
 
-import in.ramanujam.services.MongoUtils;
+import in.ramanujam.services.redis.aggregator.MongoUtils;
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.MinerRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
-import in.ramanujam.services.aggregators.ElasticSearchAggregator;
+import in.ramanujam.services.redis.aggregator.aggregators.ElasticSearchAggregator;
 import in.ramanujam.starters.ElasticSearchToMongoStarter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
