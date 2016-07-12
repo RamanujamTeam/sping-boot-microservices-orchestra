@@ -1,12 +1,17 @@
 subprojects {
 
 	apply plugin: 'groovy'
+	apply plugin: 'java'
 
-	buildscript {
-		dependencies {
-			classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.6.RELEASE")
-		}
-	}
+	sourceCompatibility = 1.8
+
+
+//
+//	buildscript {
+//		dependencies {
+//			classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.6.RELEASE")
+//		}
+//	}
 
 	repositories {
 		mavenLocal()
@@ -16,10 +21,6 @@ subprojects {
 	group = "in.ramanujam.translatorservice"
 
 	dependencies {
-		compile('org.springframework.boot:spring-boot-starter-data-mongodb')
-		compile('org.springframework.boot:spring-boot-starter-redis')
-		testCompile('org.springframework.boot:spring-boot-starter-test')
-		compile group: 'com.github.docker-java', name: 'docker-java', version: '3.0.0'
 
 		//logging
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'

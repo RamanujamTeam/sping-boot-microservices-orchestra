@@ -1,6 +1,6 @@
 package in.ramanujam.tasks;
 
-import in.ramanujam.common.MongoUtils;
+import in.ramanujam.services.MongoUtils;
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
