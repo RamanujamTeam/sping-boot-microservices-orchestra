@@ -3,6 +3,7 @@ package in.ramanujam.services.elasticsearchfiller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.common.processing.JsonStreamDataSupplier;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -38,11 +39,14 @@ public class ElasticSearchFiller
   @Value("elastic-data.json")
   private Resource elasticSearchFile;
 
+  private ObjectMapper mapper;
+
   public ElasticSearchFiller()
   {
     ElasticSearchProperties elasticSearchProperties = new ElasticSearchProperties();
     index = elasticSearchProperties.getElasticsearchIndexName();
     type = elasticSearchProperties.getElasticsearchTypeName();
+    mapper = new ObjectMapper();
     try
     {
       client = TransportClient.builder().build()
@@ -56,24 +60,33 @@ public class ElasticSearchFiller
     }
   }
 
-  public void addMinerRecord( MinerRecord minerRecord ) throws JsonProcessingException
+  public void addMinerRecord( MinerRecord minerRecord )
   {
-    ObjectMapper mapper = new ObjectMapper();
-    client.prepareIndex( index, type, minerRecord.getId().toString() )
-            .setSource( mapper.writeValueAsBytes( minerRecord ) ).execute().actionGet();
-    System.out.println( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
-        .setSource( mapper.writeValueAsBytes( minerRecord ) ).get();
-    log.trace( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
+    try
+    {
+      client.prepareIndex( index, type, minerRecord.getId().toString() )
+              .setSource( mapper.writeValueAsBytes( minerRecord ) ).execute().actionGet();
+      log.trace( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
+    }
+    catch ( JsonProcessingException e )
+    {
+      throw new RuntimeException( e );
+    }
   }
 
   public void fillItems( int offset, int limit )
   {
-    //stream should be here
     try
     {
       InputStream file = elasticSearchFile.getInputStream();
-      //stream should be here
-      //...
+      JsonStreamDataSupplier<MinerRecord> streamDataSupplier = JsonStreamDataSupplier.mapping( MinerRecord.class )
+          .forStream( file )
+          .build();
+
+      streamDataSupplier.stream()
+          .skip( offset )
+          .limit( limit )
+          .forEach( this::addMinerRecord );
       log.info( offset + " " + limit);
     }
     catch ( IOException e )

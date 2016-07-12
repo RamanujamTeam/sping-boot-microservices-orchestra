@@ -1,6 +1,7 @@
 package in.ramanujam;
 
 import in.ramanujam.common.model.MinerRecord;
+import in.ramanujam.common.processing.JsonStreamDataSupplier;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

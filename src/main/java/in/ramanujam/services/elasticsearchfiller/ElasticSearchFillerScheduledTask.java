@@ -1,17 +1,10 @@
 package in.ramanujam.services.elasticsearchfiller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import in.ramanujam.common.model.MinerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class ElasticSearchFillerScheduledTask
