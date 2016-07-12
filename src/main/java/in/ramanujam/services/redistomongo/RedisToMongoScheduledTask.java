@@ -1,6 +1,6 @@
 package in.ramanujam.services.redistomongo;
 
-import in.ramanujam.common.MongoUtils;
+import in.ramanujam.common.util.MongoUtils;
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
