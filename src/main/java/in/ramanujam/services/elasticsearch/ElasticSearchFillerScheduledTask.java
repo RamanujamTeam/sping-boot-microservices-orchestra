@@ -1,12 +1,6 @@
-package in.ramanujam.tasks;
+package in.ramanujam.services.elasticsearch;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import in.ramanujam.common.model.MinerRecord;
-import in.ramanujam.services.fillers.ElasticSearchFiller;
-import in.ramanujam.starters.ElasticSearchFillerStarter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

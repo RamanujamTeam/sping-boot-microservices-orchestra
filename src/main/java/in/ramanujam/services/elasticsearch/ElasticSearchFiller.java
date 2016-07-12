@@ -1,4 +1,4 @@
-package in.ramanujam.services.fillers;
+package in.ramanujam.services.elasticsearch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,16 +14,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 public class ElasticSearchFiller
@@ -66,7 +62,7 @@ public class ElasticSearchFiller
     {
       client.prepareIndex( index, type, minerRecord.getId().toString() )
               .setSource( mapper.writeValueAsBytes( minerRecord ) ).execute().actionGet();
-      log.trace( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
+      log.info( "ElasticSearchFiller :: Id = " + minerRecord.getId() + " count = " + ++count );
     }
     catch ( JsonProcessingException e )
     {

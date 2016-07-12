@@ -48,7 +48,6 @@ public class JsonStreamDataSupplier<T> implements Iterator<T>
   @Override
   public boolean hasNext()
   {
-    System.out.println( "has next" );
     if( !maybeHasNext )
     {
       return false; // didn't get started
@@ -59,7 +58,6 @@ public class JsonStreamDataSupplier<T> implements Iterator<T>
     }
     catch ( Exception e )
     {
-      System.out.println( "Ex" + e );
       return false;
     }
   }
@@ -69,7 +67,6 @@ public class JsonStreamDataSupplier<T> implements Iterator<T>
   {
     try
     {
-      System.out.println( "next" );
       return parser.readValueAs( mappingClass );
     }
     catch ( IOException | IllegalArgumentException e )

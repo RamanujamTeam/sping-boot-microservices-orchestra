@@ -1,7 +1,6 @@
-package in.ramanujam.services.elasticsearchfiller;
+package in.ramanujam.services.elasticsearch;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
