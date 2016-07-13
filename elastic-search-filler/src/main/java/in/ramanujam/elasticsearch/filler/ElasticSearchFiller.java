@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class ElasticSearchFiller
@@ -28,7 +29,6 @@ public class ElasticSearchFiller
   private static Client client = null;
   private static String index = null;
   private static String type = null;
-  private static JsonStreamDataSupplier<MinerRecord> streamDataSupplier = null;
 
   //debug
   private static int count = 0;
@@ -73,11 +73,10 @@ public class ElasticSearchFiller
 
   public void fillItems( int offset, int limit )
   {
-      getStreamDataSupplier().stream()
-          .skip( offset )
+    getStreamDataSupplier().stream()
+          .skip(offset)
           .limit( limit )
           .forEach( this::addMinerRecord );
-      log.info( offset + " " + limit);
   }
 
   public static void writeIsFinished( boolean isFinished ) throws JsonProcessingException
@@ -89,16 +88,8 @@ public class ElasticSearchFiller
             .setSource( mapper.writeValueAsBytes( isFinishedMap ) ).get();
   }
 
-  public boolean hasNextInput()
-  {
-    return streamDataSupplier.hasNext();
-  }
-
   private JsonStreamDataSupplier<MinerRecord> getStreamDataSupplier()
   {
-    if( streamDataSupplier != null )
-      return streamDataSupplier;
-
     InputStream inputStream = null;
     try
     {
@@ -109,8 +100,13 @@ public class ElasticSearchFiller
       e.printStackTrace();
     }
 
-    return streamDataSupplier = JsonStreamDataSupplier.mapping( MinerRecord.class )
+    return JsonStreamDataSupplier.mapping( MinerRecord.class )
               .forStream( inputStream )
               .build();
+  }
+
+  public long elementsLeft( int fromNumber )
+  {
+    return getStreamDataSupplier().stream().count() - fromNumber;
   }
 }

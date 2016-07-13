@@ -1,10 +1,12 @@
 package in.ramanujam.elasticsearch.filler;
 
+import in.ramanujam.common.model.MinerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 @Component
 public class ElasticSearchFillerScheduledTask
@@ -23,7 +25,7 @@ public class ElasticSearchFillerScheduledTask
         filler.fillItems( curPos, PAGE_SIZE );
         curPos += PAGE_SIZE;
 
-        if( !filler.hasNextInput() )
+        if( filler.elementsLeft( curPos ) <= 0 )
         {
             ElasticSearchFiller.writeIsFinished( true );
             System.out.println( "ElasticSearchFiller :: Successfully finished!");
