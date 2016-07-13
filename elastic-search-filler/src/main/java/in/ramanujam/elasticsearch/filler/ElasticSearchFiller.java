@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 public class ElasticSearchFiller
@@ -72,23 +73,10 @@ public class ElasticSearchFiller
 
   public void fillItems( int offset, int limit )
   {
-    try
-    {
-      InputStream file = elasticSearchFile.getInputStream();
-      JsonStreamDataSupplier<MinerRecord> streamDataSupplier = JsonStreamDataSupplier.mapping( MinerRecord.class )
-          .forStream( file )
-          .build();
-
-      streamDataSupplier.stream()
-          .skip( offset )
+    getStreamDataSupplier().stream()
+          .skip(offset)
           .limit( limit )
           .forEach( this::addMinerRecord );
-      log.info( offset + " " + limit);
-    }
-    catch ( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
   }
 
   public static void writeIsFinished( boolean isFinished ) throws JsonProcessingException
@@ -98,5 +86,27 @@ public class ElasticSearchFiller
     ObjectMapper mapper = new ObjectMapper();
     client.prepareIndex( index, ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() )
             .setSource( mapper.writeValueAsBytes( isFinishedMap ) ).get();
+  }
+
+  private JsonStreamDataSupplier<MinerRecord> getStreamDataSupplier()
+  {
+    InputStream inputStream = null;
+    try
+    {
+      inputStream = elasticSearchFile.getInputStream();
+    }
+    catch( IOException e )
+    {
+      e.printStackTrace();
+    }
+
+    return JsonStreamDataSupplier.mapping( MinerRecord.class )
+              .forStream( inputStream )
+              .build();
+  }
+
+  public long elementsLeft( int fromNumber )
+  {
+    return getStreamDataSupplier().stream().count() - fromNumber;
   }
 }
