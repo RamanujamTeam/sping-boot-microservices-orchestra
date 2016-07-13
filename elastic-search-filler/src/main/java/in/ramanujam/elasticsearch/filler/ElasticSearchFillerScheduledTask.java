@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler;
+package in.ramanujam.elasticsearch.filler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

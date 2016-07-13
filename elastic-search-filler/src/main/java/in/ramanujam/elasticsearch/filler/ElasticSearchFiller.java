@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler;
+package in.ramanujam.elasticsearch.filler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler;
+package in.ramanujam.redis.aggregator;
 
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;

@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler.redis.filler;
+package in.ramanujam.redis.filler;
 
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;

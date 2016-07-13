@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler;
+package in.ramanujam.redis.aggregator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

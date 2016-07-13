@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler.docker;
+package in.ramanujam.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;

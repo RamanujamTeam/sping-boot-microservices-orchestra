@@ -1,4 +1,4 @@
-package in.ramanujam.services.elasticsearch.filler;
+package in.ramanujam.elasticsearch.aggregator;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
