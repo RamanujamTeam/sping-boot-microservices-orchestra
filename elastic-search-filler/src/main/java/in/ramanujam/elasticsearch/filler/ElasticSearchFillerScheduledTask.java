@@ -23,7 +23,7 @@ public class ElasticSearchFillerScheduledTask
         filler.fillItems( curPos, PAGE_SIZE );
         curPos += PAGE_SIZE;
 
-        if( curPos >= 1000 )
+        if( !filler.hasNextInput() )
         {
             ElasticSearchFiller.writeIsFinished( true );
             System.out.println( "ElasticSearchFiller :: Successfully finished!");

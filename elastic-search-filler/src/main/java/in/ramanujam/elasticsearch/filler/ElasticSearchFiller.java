@@ -28,6 +28,7 @@ public class ElasticSearchFiller
   private static Client client = null;
   private static String index = null;
   private static String type = null;
+  private static JsonStreamDataSupplier<MinerRecord> streamDataSupplier = null;
 
   //debug
   private static int count = 0;
@@ -72,23 +73,11 @@ public class ElasticSearchFiller
 
   public void fillItems( int offset, int limit )
   {
-    try
-    {
-      InputStream file = elasticSearchFile.getInputStream();
-      JsonStreamDataSupplier<MinerRecord> streamDataSupplier = JsonStreamDataSupplier.mapping( MinerRecord.class )
-          .forStream( file )
-          .build();
-
-      streamDataSupplier.stream()
+      getStreamDataSupplier().stream()
           .skip( offset )
           .limit( limit )
           .forEach( this::addMinerRecord );
       log.info( offset + " " + limit);
-    }
-    catch ( IOException e )
-    {
-      throw new RuntimeException( e );
-    }
   }
 
   public static void writeIsFinished( boolean isFinished ) throws JsonProcessingException
@@ -98,5 +87,30 @@ public class ElasticSearchFiller
     ObjectMapper mapper = new ObjectMapper();
     client.prepareIndex( index, ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey() )
             .setSource( mapper.writeValueAsBytes( isFinishedMap ) ).get();
+  }
+
+  public boolean hasNextInput()
+  {
+    return streamDataSupplier.hasNext();
+  }
+
+  private JsonStreamDataSupplier<MinerRecord> getStreamDataSupplier()
+  {
+    if( streamDataSupplier != null )
+      return streamDataSupplier;
+
+    InputStream inputStream = null;
+    try
+    {
+      inputStream = elasticSearchFile.getInputStream();
+    }
+    catch( IOException e )
+    {
+      e.printStackTrace();
+    }
+
+    return streamDataSupplier = JsonStreamDataSupplier.mapping( MinerRecord.class )
+              .forStream( inputStream )
+              .build();
   }
 }
