@@ -1,0 +1,22 @@
+version 'unspecified'
+
+apply plugin: 'spring-boot'
+
+buildscript {
+    ext {
+        springBootVersion = '1.3.5.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+dependencies {
+    compile  project(':commons')
+    compile('org.springframework.boot:spring-boot-starter')
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.3.3'
+    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.2.2'
+}
