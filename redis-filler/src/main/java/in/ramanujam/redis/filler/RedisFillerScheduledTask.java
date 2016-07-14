@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class RedisFillerScheduledTask {
@@ -40,12 +42,14 @@ public class RedisFillerScheduledTask {
         NodeList records = doc.getDocumentElement().getChildNodes();
 
         int lastIndex = Math.min( curPos + 100, records.getLength() );
+        List<BitcoinRecord> bitcoinRecords = new ArrayList<>();
         while ( curPos < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
             String id = records.item( curPos ).getChildNodes().item( 0).getChildNodes().item( 0).getNodeValue();
             String key = records.item( curPos ).getChildNodes().item( 1).getChildNodes().item( 0).getNodeValue();
-            RedisFiller.addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
+            bitcoinRecords.add(new BitcoinRecord( Integer.valueOf( id ), key ));
             curPos++;
         }
+        RedisFiller.addBitcoin( bitcoinRecords );
 
         if( curPos >= records.getLength() )
         {

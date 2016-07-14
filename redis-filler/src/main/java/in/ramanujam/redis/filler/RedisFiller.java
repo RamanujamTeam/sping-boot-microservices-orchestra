@@ -1,8 +1,10 @@
 package in.ramanujam.redis.filler;
 
+import java.util.List;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 
 public class RedisFiller
 {
@@ -14,6 +16,21 @@ public class RedisFiller
     jedis.hset( RedisProperties.getInstance().getRedisHashsetName(), bitcoin.getId().toString(), bitcoin.getKey() );
     jedis.close();
     System.out.println( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
+  }
+
+  public static void addBitcoin( List<BitcoinRecord> bitcoins )
+  {
+    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
+        RedisProperties.getInstance().getRedisContainerExternalPort());
+    Pipeline pipeline = jedis.pipelined();
+    bitcoins.forEach(
+        b -> {
+          pipeline.hset(RedisProperties.getInstance().getRedisHashsetName(), b.getId().toString(), b.getKey() );
+          System.out.println( "RedisFiller :: Id = " + b.getId() + " count = " + ++count  );
+        }
+    );
+    pipeline.sync();
+    jedis.close();
   }
 
   public static void writeIsFinished( boolean isFinished )
