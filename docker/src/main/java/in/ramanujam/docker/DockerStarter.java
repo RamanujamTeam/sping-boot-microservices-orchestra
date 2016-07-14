@@ -19,7 +19,7 @@ public class DockerStarter
   private static boolean redisToMongoFinished = false;
   private static boolean elasticToMongoFinished = false;
 
-  public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException
+  public static void main( String[] args ) throws IOException, InterruptedException
   {
     DockerClient dockerClient = DockerClientFactory.getClient();
 
