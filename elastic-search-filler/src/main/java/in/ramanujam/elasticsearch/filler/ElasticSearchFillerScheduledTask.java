@@ -20,14 +20,12 @@ public class ElasticSearchFillerScheduledTask
     @Scheduled(fixedDelay = 1000) // TODO: 30 secs
     public void runWithDelay() throws IOException
     {
-        filler.fillItems( curPos, PAGE_SIZE );
-        curPos += PAGE_SIZE;
-
-        if( curPos >= 1000 )
+        if( filler.fillItems( curPos, PAGE_SIZE ) == 0 )
         {
             ElasticSearchFiller.writeIsFinished( true );
             System.out.println( "ElasticSearchFiller :: Successfully finished!");
             ElasticSearchFillerStarter.shutdown();
         }
+        curPos += PAGE_SIZE;
     }
 }
