@@ -5,8 +5,10 @@ import com.mongodb.DBCollection;
 import com.mongodb.WriteResult;
 import in.ramanujam.common.model.MinerRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
+import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.IndexNotFoundException;
@@ -80,6 +82,8 @@ public class ElasticSearchAggregator
       client.prepareDelete( index, type, String.valueOf( record.getId() ) )
               .execute()
               .actionGet();
+
+      flushElasticSearch( client, index );
     }
     catch( IndexNotFoundException e ){return;}
     System.out.println( "ElasticSearchToMongo :: Removed from ElasticSearch :: Id = " + record.getId() + " count = " + ++removeCount );
@@ -127,6 +131,14 @@ public class ElasticSearchAggregator
     {
       return false;
     }
+  }
+
+  private static void flushElasticSearch( Client client, String index )
+  {
+    FlushResponse flushResponse = client.admin().indices().flush( Requests.flushRequest( index ) ).actionGet();
+    int failedShards = flushResponse.getFailedShards();
+    if( failedShards > 0 )
+      throw new RuntimeException( "Failed shards - " + failedShards );
   }
 }
 /*
