@@ -31,6 +31,7 @@ public class RedisFiller
     );
     pipeline.sync();
     jedis.close();
+    System.out.println("Bitcoin batch: " + bitcoins.size());
   }
 
   public static void writeIsFinished( boolean isFinished )
