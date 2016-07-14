@@ -20,6 +20,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ElasticSearchFiller
@@ -70,7 +72,7 @@ public class ElasticSearchFiller
     }
   }
 
-  public void fillItems( int offset, int limit )
+  public int fillItems( int offset, int limit )
   {
     try
     {
@@ -79,11 +81,16 @@ public class ElasticSearchFiller
           .forStream( file )
           .build();
 
-      streamDataSupplier.stream()
+      List<MinerRecord> minerRecords = streamDataSupplier.stream()
           .skip( offset )
           .limit( limit )
-          .forEach( this::addMinerRecord );
-      log.info( offset + " " + limit);
+          .collect( Collectors.toList() );
+
+      for( MinerRecord record : minerRecords )
+        addMinerRecord( record );
+
+      log.info( "Offset: " + offset + ", limit: " + limit);
+      return minerRecords.size();
     }
     catch ( IOException e )
     {
