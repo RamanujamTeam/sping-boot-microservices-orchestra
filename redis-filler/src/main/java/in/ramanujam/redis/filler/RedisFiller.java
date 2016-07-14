@@ -2,10 +2,13 @@ package in.ramanujam.redis.filler;
 
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 public class RedisFiller
 {
+  private static final Logger log = LoggerFactory.getLogger( RedisFiller.class );
   private static int count = 0;
   public static void addBitcoin( BitcoinRecord bitcoin )
   {
@@ -13,7 +16,7 @@ public class RedisFiller
                              RedisProperties.getInstance().getRedisContainerExternalPort());
     jedis.hset( RedisProperties.getInstance().getRedisHashsetName(), bitcoin.getId().toString(), bitcoin.getKey() );
     jedis.close();
-    System.out.println( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
+    log.info( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
   }
 
   public static void writeIsFinished( boolean isFinished )

@@ -3,6 +3,8 @@ package in.ramanujam.elasticsearch.aggregator;
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.MinerRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Component
 public class ElasticSearchAggregatorScheduledTask
 {
+    private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregatorScheduledTask.class);
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException
     {
@@ -25,11 +28,17 @@ public class ElasticSearchAggregatorScheduledTask
             }
         }
 
-        if( ElasticSearchAggregator.getInstance().isElasticSearchFillerFinished() && records.size() == 1 )
+        if( noMoreRecords( records ) )
         {
             MessageBus.getInstance().sendMessage( ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey() );
-            System.out.println( "ElasticSearchToMongo :: Successfully finished!");
+            log.info("ElasticSearchToMongo :: Successfully finished!");
             ElasticSearchToMongoStarter.shutdown();
         }
+    }
+
+    private boolean noMoreRecords( List records )
+    {
+        return ElasticSearchAggregator.getInstance().isElasticSearchFillerFinished()
+                && records.size() == 1;
     }
 }

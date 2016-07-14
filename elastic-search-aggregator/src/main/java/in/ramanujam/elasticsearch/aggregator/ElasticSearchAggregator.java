@@ -15,6 +15,8 @@ import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -29,7 +31,7 @@ public class ElasticSearchAggregator
   private String type;
   private static int writeCount = 0;
   private static int removeCount = 0;
-
+  private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregator.class);
 
   private ElasticSearchAggregator()
   {
@@ -86,7 +88,7 @@ public class ElasticSearchAggregator
       flushElasticSearch( client, index );
     }
     catch( IndexNotFoundException e ){return;}
-    System.out.println( "ElasticSearchToMongo :: Removed from ElasticSearch :: Id = " + record.getId() + " count = " + ++removeCount );
+    log.info( "ElasticSearchToMongo :: Removed from ElasticSearch :: Id = " + record.getId() + " count = " + ++removeCount );
   }
 
   public void moveRecordFromElasticSearchToMongo( MinerRecord minerRecord, DBCollection collection )
@@ -114,7 +116,7 @@ public class ElasticSearchAggregator
 
     BasicDBObject searchQuery = new BasicDBObject().append( "_id", esRecord.getId() );
     WriteResult result = collection.update( searchQuery, document, true, false );
-    System.out.println( "ElasticSearchToMongo :: Wrote to Mongo :: Id = " + esRecord.getId() + " count = " + ++writeCount ); // TODO: can we replace it with Spring AOP?
+    log.info( "ElasticSearchToMongo :: Wrote to Mongo :: Id = " + esRecord.getId() + " count = " + ++writeCount ); // TODO: can we replace it with Spring AOP?
     return result;
   }
 
