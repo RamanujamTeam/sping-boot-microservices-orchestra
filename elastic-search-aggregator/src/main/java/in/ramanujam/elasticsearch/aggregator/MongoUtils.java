@@ -12,7 +12,7 @@ public class MongoUtils
 {
   private static DBCollection collection;
 
-  private static DBCollection setupCollection() throws UnknownHostException
+  private static DBCollection setupCollection()
   {
     MongoDBProperties properties = new MongoDBProperties();
     MongoClient mongo = new MongoClient( properties.getMongoHost(), properties.getMongoPort() );
@@ -22,7 +22,7 @@ public class MongoUtils
     return db.getCollection( properties.getMongoCollection() );
   }
 
-  public static DBCollection getCollection() throws UnknownHostException
+  public static DBCollection getCollection()
   {
     if( collection != null )
       return collection;

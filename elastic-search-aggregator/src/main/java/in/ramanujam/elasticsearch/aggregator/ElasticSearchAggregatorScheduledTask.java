@@ -19,14 +19,10 @@ public class ElasticSearchAggregatorScheduledTask
     public void runWithDelay() throws IOException
     {
         List<MinerRecord> records = ElasticSearchAggregator.getInstance().retrieveAllRecords();
-        for( MinerRecord esRecord : records )
-        {
-            if( !esRecord.equals( new MinerRecord()) )
-            {
-                ElasticSearchAggregator.getInstance().
-                        moveRecordFromElasticSearchToMongo( esRecord, MongoUtils.getCollection() );
-            }
-        }
+
+        records.stream().filter( record -> !record.equals(new MinerRecord()) )
+                .forEach(record -> ElasticSearchAggregator.getInstance().
+                        moveRecordFromElasticSearchToMongo(record, MongoUtils.getCollection()));
 
         if( noMoreRecords( records ) )
         {
