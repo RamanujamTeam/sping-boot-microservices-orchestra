@@ -27,11 +27,10 @@ public class RedisFillerScheduledTask {
     @Value("redis-data.xml")
     private Resource redisDataFile;
 
-    private int curPos = 1;
+    private int curPos = 0;
     // TODO: add StAX
     @Scheduled(fixedDelay = 100) // TODO: 30 secs
     public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
-// TODO: add batching
         File fXmlFile = redisDataFile.getFile();
         String trimmedXML = String.join("", Files.readAllLines(fXmlFile.toPath(), StandardCharsets.UTF_8))
             .replaceAll(">\\s+<", "><").trim();
@@ -43,13 +42,13 @@ public class RedisFillerScheduledTask {
 
         int lastIndex = Math.min( curPos + 100, records.getLength() );
         List<BitcoinRecord> bitcoinRecords = new ArrayList<>();
-        while ( curPos < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
+        while ( curPos < lastIndex){
             String id = records.item( curPos ).getChildNodes().item( 0).getChildNodes().item( 0).getNodeValue();
             String key = records.item( curPos ).getChildNodes().item( 1).getChildNodes().item( 0).getNodeValue();
             bitcoinRecords.add(new BitcoinRecord( Integer.valueOf( id ), key ));
             curPos++;
         }
-        RedisFiller.addBitcoin( bitcoinRecords );
+        RedisFiller.addBitcoins( bitcoinRecords );
 
         if( curPos >= records.getLength() )
         {

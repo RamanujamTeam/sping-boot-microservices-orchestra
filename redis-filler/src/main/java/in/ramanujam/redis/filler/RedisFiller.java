@@ -9,7 +9,7 @@ import redis.clients.jedis.Pipeline;
 public class RedisFiller
 {
   private static int count = 0;
-  public static void addBitcoin( BitcoinRecord bitcoin )
+  public static void addBitcoins(BitcoinRecord bitcoin )
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort());
@@ -18,7 +18,7 @@ public class RedisFiller
     System.out.println( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
   }
 
-  public static void addBitcoin( List<BitcoinRecord> bitcoins )
+  public static void addBitcoins(List<BitcoinRecord> bitcoins )
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
         RedisProperties.getInstance().getRedisContainerExternalPort());
