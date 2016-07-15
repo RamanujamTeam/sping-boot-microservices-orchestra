@@ -3,11 +3,14 @@ package in.ramanujam.redis.filler;
 import java.util.List;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
 public class RedisFiller
 {
+  private static final Logger LOGGER = LoggerFactory.getLogger( RedisFiller.class );
   private static int count = 0;
   public static void addBitcoins(BitcoinRecord bitcoin )
   {
@@ -20,18 +23,19 @@ public class RedisFiller
 
   public static void addBitcoins(List<BitcoinRecord> bitcoins )
   {
-    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
-        RedisProperties.getInstance().getRedisContainerExternalPort());
-    Pipeline pipeline = jedis.pipelined();
-    bitcoins.forEach(
-        b -> {
-          pipeline.hset(RedisProperties.getInstance().getRedisHashsetName(), b.getId().toString(), b.getKey() );
-          System.out.println( "RedisFiller :: Id = " + b.getId() + " count = " + ++count  );
-        }
-    );
-    pipeline.sync();
-    jedis.close();
-    System.out.println("Bitcoin batch: " + bitcoins.size());
+    try ( Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
+        RedisProperties.getInstance().getRedisContainerExternalPort())) {
+      Pipeline pipeline = jedis.pipelined();
+      bitcoins.forEach(
+          b -> {
+            pipeline.hset(RedisProperties.getInstance().getRedisHashsetName(), b.getId().toString(), b.getKey() );
+            LOGGER.info( "RedisFiller :: Id = " + b.getId() + " count = " + ++count   );
+          }
+      );
+      pipeline.sync();
+      LOGGER.info( "Bitcoin batch: " + bitcoins.size() );
+    }
+
   }
 
   public static void writeIsFinished( boolean isFinished )
