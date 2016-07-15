@@ -20,9 +20,9 @@ public class ElasticSearchAggregatorScheduledTask
     {
         List<MinerRecord> records = ElasticSearchAggregator.getInstance().retrieveAllRecords();
 
-        records.stream().filter( record -> !record.equals(new MinerRecord()) )
-                .forEach(record -> ElasticSearchAggregator.getInstance().
-                        moveRecordFromElasticSearchToMongo(record, MongoUtils.getCollection()));
+        records.stream()
+                .filter( record -> !record.equals(new MinerRecord()) )
+                .forEach(record -> ElasticSearchAggregator.getInstance().moveRecordFromElasticSearchToMongo(record, MongoUtils.getCollection()));
 
         if( noMoreRecords( records ) )
         {
