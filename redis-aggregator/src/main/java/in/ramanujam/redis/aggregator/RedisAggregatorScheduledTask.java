@@ -3,6 +3,8 @@ package in.ramanujam.redis.aggregator;
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Component
 public class RedisAggregatorScheduledTask
 {
-    // TODO: how can we stop it from running after all records are persisted?
+    private static final Logger log = LoggerFactory.getLogger( RedisAggregatorScheduledTask.class );
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException
     {
@@ -25,7 +27,7 @@ public class RedisAggregatorScheduledTask
         if( records.size() == 0 && RedisAggregator.isRedisFillerFinished() )
         {
             MessageBus.getInstance().sendMessage( RedisProperties.getInstance().getRedisToMongoIsFinishedKey() );
-            System.out.println( "RedisToMongo :: Successfully finished!");
+            log.info( "RedisToMongo :: Successfully finished!");
             RedisAggregatorStarter.shutdown();
         }
     }

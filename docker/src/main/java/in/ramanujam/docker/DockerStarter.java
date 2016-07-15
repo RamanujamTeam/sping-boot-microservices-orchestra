@@ -10,6 +10,8 @@ import in.ramanujam.common.messaging.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -18,6 +20,7 @@ public class DockerStarter
 {
   private static boolean redisToMongoFinished = false;
   private static boolean elasticToMongoFinished = false;
+  private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
 
   public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException
   {
@@ -64,7 +67,7 @@ public class DockerStarter
     tryToStopContainer(dockerClient, redisContainer);
     tryToStopContainer(dockerClient, ESContainer);
     tryToStopContainer(dockerClient, rabbitMQContainer);
-    System.out.println( "DockerStarter :: Successfully finished!");
+    log.info( "DockerStarter :: Successfully finished!");
   }
 
   private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container)
@@ -76,7 +79,7 @@ public class DockerStarter
     catch( Exception e )
     {
       if( e.getMessage().contains( "port is already allocated" ) ) // consider this is our container from the previous program run
-        System.out.println( e.getMessage() );
+        log.debug( e.getMessage() );
       else
         throw e;
     }

@@ -5,6 +5,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.WriteResult;
 import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
@@ -12,16 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 01.07.2016
- * Time: 19:56
- */
 public class RedisAggregator
 {
   private static int writeCount = 0;
   private static int removeCount = 0;
+  private static final Logger log = LoggerFactory.getLogger( RedisAggregator.class );
   public static List<BitcoinRecord> retrieveAllRecords() // TODO: rename method
   {
     List<BitcoinRecord> bitcoins = new ArrayList<>();
@@ -43,7 +40,7 @@ public class RedisAggregator
                              RedisProperties.getInstance().getRedisContainerExternalPort());
     jedis.hdel( "bitcoins", String.valueOf( redisRecord.getId() ) ); // TODO: extract to properties
     jedis.close();
-    System.out.println( "RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount );
+    log.info( "RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount );
   }
 
   public static void moveRecordFromRedisToMongo( BitcoinRecord redisRecord, DBCollection collection )
@@ -67,7 +64,7 @@ public class RedisAggregator
 
     BasicDBObject searchQuery = new BasicDBObject().append( "_id", redisRecord.getId() );
     WriteResult result = collection.update( searchQuery, document, true, false );
-    System.out.println( "RedisToMongo :: Wrote to Mongo :: Id = " + redisRecord.getId() + " count = " + ++writeCount );
+    log.info( "RedisToMongo :: Wrote to Mongo :: Id = " + redisRecord.getId() + " count = " + ++writeCount );
     return result;
   }
 

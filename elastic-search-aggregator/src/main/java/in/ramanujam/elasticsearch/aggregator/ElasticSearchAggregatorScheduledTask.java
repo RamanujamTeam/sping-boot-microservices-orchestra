@@ -3,6 +3,8 @@ package in.ramanujam.elasticsearch.aggregator;
 import in.ramanujam.common.messaging.MessageBus;
 import in.ramanujam.common.model.MinerRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,23 +14,27 @@ import java.util.List;
 @Component
 public class ElasticSearchAggregatorScheduledTask
 {
-    // TODO: how can we stop it from running after all records are persisted?
+    private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregatorScheduledTask.class);
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException
     {
         List<MinerRecord> records = ElasticSearchAggregator.getInstance().retrieveAllRecords();
-        for( MinerRecord esRecord : records )
-        {
-            ElasticSearchAggregator.getInstance().
-                    moveRecordFromElasticSearchToMongo( esRecord, MongoUtils.getCollection() );
-        }
-            // TODO: replace these conditions:
-        if( records.size() == 1 && records.get( 0 ).equals( new MinerRecord(  ) )
-                && ElasticSearchAggregator.getInstance().isElasticSearchFillerFinished() ) // TODO: это фикс для бага - при записи в ES создается еще одна запись со всеми параметрами null
+
+        records.stream()
+                .filter( record -> !record.equals(new MinerRecord()) )
+                .forEach(record -> ElasticSearchAggregator.getInstance().moveRecordFromElasticSearchToMongo(record, MongoUtils.getCollection()));
+
+        if( noMoreRecords( records ) )
         {
             MessageBus.getInstance().sendMessage( ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey() );
-            System.out.println( "ElasticSearchToMongo :: Successfully finished!");
+            log.info("ElasticSearchToMongo :: Successfully finished!");
             ElasticSearchToMongoStarter.shutdown();
         }
+    }
+
+    private boolean noMoreRecords( List records )
+    {
+        return ElasticSearchAggregator.getInstance().isElasticSearchFillerFinished()
+                && records.size() == 1;
     }
 }
