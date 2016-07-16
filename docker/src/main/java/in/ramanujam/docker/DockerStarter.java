@@ -134,7 +134,7 @@ public class DockerStarter
   }
 
 
-  private static void closeConnection( Channel channel, Connection connection ) throws IOException // TODO: hide this method
+  private static void closeConnection( Channel channel, Connection connection ) throws IOException
   {
     try
     {

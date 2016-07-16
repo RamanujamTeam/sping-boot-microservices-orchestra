@@ -38,7 +38,7 @@ public class RedisAggregator
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort());
-    jedis.hdel( "bitcoins", String.valueOf( redisRecord.getId() ) ); // TODO: extract to properties
+    jedis.hdel( RedisProperties.getInstance().getRedisHashsetName(), String.valueOf( redisRecord.getId() ) );
     jedis.close();
     log.info( "RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount );
   }
@@ -58,7 +58,7 @@ public class RedisAggregator
     BasicDBObject document = new BasicDBObject();
 
     BasicDBObject values = new BasicDBObject()
-            .append( "bitcoin", redisRecord.getKey() ); // TODO: extract to properties
+            .append( "bitcoin", redisRecord.getKey() );
 
     document.append( "$set", values );
 
