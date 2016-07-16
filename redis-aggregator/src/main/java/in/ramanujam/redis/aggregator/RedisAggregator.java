@@ -8,6 +8,8 @@ import in.ramanujam.common.properties.RedisProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +21,17 @@ public class RedisAggregator
   private static int writeCount = 0;
   private static int removeCount = 0;
   private static final Logger log = LoggerFactory.getLogger( RedisAggregator.class );
-  public static List<BitcoinRecord> retrieveAllRecords() // TODO: rename method
+  public static List<BitcoinRecord> retrieveRecords( int size )
   {
     List<BitcoinRecord> bitcoins = new ArrayList<>();
     try( Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                                   RedisProperties.getInstance().getRedisContainerExternalPort()) )
     {
-      Map<String, String> redisRecordMap = jedis.hgetAll( RedisProperties.getInstance().getRedisHashsetName() );//TODO: retrieve only 100 records, not all of them
-      bitcoins = redisRecordMap.entrySet().stream()
+      String cur = redis.clients.jedis.ScanParams.SCAN_POINTER_START;
+      ScanParams params = new ScanParams().count(size);
+
+      ScanResult<Map.Entry<String, String>> scanResult = jedis.hscan(RedisProperties.getInstance().getRedisHashsetName(), cur, params);
+      bitcoins = scanResult.getResult().stream()
               .map( entry -> new BitcoinRecord( Integer.parseInt( entry.getKey() ), entry.getValue() ) )
               .collect( Collectors.toList() );
     }
