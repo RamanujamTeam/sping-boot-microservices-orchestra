@@ -21,7 +21,7 @@ public class RedisFiller
     System.out.println( "RedisFiller :: Id = " + bitcoin.getId() + " count = " + ++count  );
   }
 
-  public static void addBitcoins(List<BitcoinRecord> bitcoins )
+  public static void addBitcoins( List<BitcoinRecord> bitcoins )
   {
     try ( Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
         RedisProperties.getInstance().getRedisContainerExternalPort())) {
@@ -29,13 +29,12 @@ public class RedisFiller
       bitcoins.forEach(
           b -> {
             pipeline.hset(RedisProperties.getInstance().getRedisHashsetName(), b.getId().toString(), b.getKey() );
-            LOGGER.info( "RedisFiller :: Id = " + b.getId() + " count = " + ++count   );
+            log.info( "RedisFiller :: Id = " + b.getId() + " count = " + ++count   );
           }
       );
       pipeline.sync();
-      LOGGER.info( "Bitcoin batch: " + bitcoins.size() );
+      log.info( "Bitcoin batch: " + bitcoins.size() );
     }
-
   }
 
   public static void writeIsFinished( boolean isFinished )

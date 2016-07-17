@@ -31,7 +31,6 @@ public class ElasticSearchFiller
   private static String index = null;
   private static String type = null;
 
-  //debug
   private static int count = 0;
 
   @Value("elastic-data.json")

@@ -1,11 +1,5 @@
 package in.ramanujam.common.properties;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 01.07.2016
- * Time: 20:34
- */
 public class MongoDBProperties extends AbstractProperties
 {
   private static final String MONGO_HOST = "mongo.host";

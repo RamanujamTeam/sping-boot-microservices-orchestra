@@ -1,11 +1,5 @@
 package in.ramanujam.common.model;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 01.07.2016
- * Time: 17:30
- */
 public class BitcoinRecord
 {
   private Integer id;

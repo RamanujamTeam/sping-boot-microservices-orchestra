@@ -8,12 +8,6 @@ import in.ramanujam.common.properties.RabbitMQProperties;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 04.07.2016
- * Time: 19:50
- */
 public class MessageBus
 {
   private static final MessageBus instance = new MessageBus();

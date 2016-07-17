@@ -34,20 +34,19 @@ public class RedisFillerScheduledTask {
     private int entriesParsed = 0;
     private int batchSize = 100;
     private BitcoinsParser parser = new BitcoinsParser();
-    // TODO: add batching
     @Scheduled(fixedDelay = 100) // TODO: 30 secs
     public void runWithDelay() throws Exception
     {
         File xmlFile = redisDataFile.getFile();
 
         List<BitcoinRecord> bitcoins = parser.parseRecords(xmlFile, entriesParsed, batchSize);
-        bitcoins.stream().forEach( RedisFiller::addBitcoin );
+        RedisFiller.addBitcoins( bitcoins );
         entriesParsed += bitcoins.size();
 
         if( bitcoins.isEmpty() )
         {
             RedisFiller.writeIsFinished( true );
-            log.info( "RedisFiller :: Successfully finished!" );
+            log.info("RedisFiller :: Successfully finished!");
             RedisFillerStarter.shutdown();
         }
     }

@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 01.07.2016
- * Time: 19:57
- */
 public class TestUtil
 {
   public static MongoDBRecord generateMongoRecord()

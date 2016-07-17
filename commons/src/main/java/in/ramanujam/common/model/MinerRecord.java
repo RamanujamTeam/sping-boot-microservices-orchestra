@@ -5,12 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 01.07.2016
- * Time: 17:30
- */
 public class MinerRecord
 {
   @JsonProperty
