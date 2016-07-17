@@ -3,6 +3,7 @@ package in.ramanujam.redis.filler;
 import in.ramanujam.common.model.BitcoinRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,21 +32,25 @@ public class RedisFillerScheduledTask {
     @Value("redis-data.xml")
     private Resource redisDataFile;
 
+    @Autowired
+    private BitcoinsParser parser;
+
+    @Autowired
+    RedisFiller filler;
     private int entriesParsed = 0;
     private int batchSize = 100;
-    private BitcoinsParser parser = new BitcoinsParser();
     @Scheduled(fixedDelay = 100) // TODO: 30 secs
     public void runWithDelay() throws Exception
     {
         File xmlFile = redisDataFile.getFile();
 
         List<BitcoinRecord> bitcoins = parser.parseRecords(xmlFile, entriesParsed, batchSize);
-        RedisFiller.addBitcoins( bitcoins );
+        filler.addBitcoins(bitcoins);
         entriesParsed += bitcoins.size();
 
         if( bitcoins.isEmpty() )
         {
-            RedisFiller.writeIsFinished( true );
+            filler.writeIsFinished( true );
             log.info("RedisFiller :: Successfully finished!");
             RedisFillerStarter.shutdown();
         }
