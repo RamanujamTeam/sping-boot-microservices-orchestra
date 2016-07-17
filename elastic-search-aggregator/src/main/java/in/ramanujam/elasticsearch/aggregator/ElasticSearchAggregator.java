@@ -5,14 +5,18 @@ import com.mongodb.DBCollection;
 import com.mongodb.WriteResult;
 import in.ramanujam.common.model.MinerRecord;
 import in.ramanujam.common.properties.ElasticSearchProperties;
+import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -27,7 +31,7 @@ public class ElasticSearchAggregator
   private String type;
   private static int writeCount = 0;
   private static int removeCount = 0;
-
+  private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregator.class);
 
   private ElasticSearchAggregator()
   {
@@ -80,9 +84,11 @@ public class ElasticSearchAggregator
       client.prepareDelete( index, type, String.valueOf( record.getId() ) )
               .execute()
               .actionGet();
+
+      flushElasticSearch( client, index );
     }
     catch( IndexNotFoundException e ){return;}
-    System.out.println( "ElasticSearchToMongo :: Removed from ElasticSearch :: Id = " + record.getId() + " count = " + ++removeCount );
+    log.info( "ElasticSearchToMongo :: Removed from ElasticSearch :: Id = " + record.getId() + " count = " + ++removeCount );
   }
 
   public void moveRecordFromElasticSearchToMongo( MinerRecord minerRecord, DBCollection collection )
@@ -110,7 +116,7 @@ public class ElasticSearchAggregator
 
     BasicDBObject searchQuery = new BasicDBObject().append( "_id", esRecord.getId() );
     WriteResult result = collection.update( searchQuery, document, true, false );
-    System.out.println( "ElasticSearchToMongo :: Wrote to Mongo :: Id = " + esRecord.getId() + " count = " + ++writeCount ); // TODO: can we replace it with Spring AOP?
+    log.info( "ElasticSearchToMongo :: Wrote to Mongo :: Id = " + esRecord.getId() + " count = " + ++writeCount ); // TODO: can we replace it with Spring AOP?
     return result;
   }
 
@@ -127,6 +133,14 @@ public class ElasticSearchAggregator
     {
       return false;
     }
+  }
+
+  private static void flushElasticSearch( Client client, String index )
+  {
+    FlushResponse flushResponse = client.admin().indices().flush( Requests.flushRequest( index ) ).actionGet();
+    int failedShards = flushResponse.getFailedShards();
+    if( failedShards > 0 )
+      throw new RuntimeException( "Failed shards - " + failedShards );
   }
 }
 /*

@@ -10,9 +10,9 @@ import redis.clients.jedis.Pipeline;
 
 public class RedisFiller
 {
-  private static final Logger LOGGER = LoggerFactory.getLogger( RedisFiller.class );
+  private static final Logger log = LoggerFactory.getLogger( RedisFiller.class );
   private static int count = 0;
-  public static void addBitcoins(BitcoinRecord bitcoin )
+  public static void addBitcoin( BitcoinRecord bitcoin )
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort());
