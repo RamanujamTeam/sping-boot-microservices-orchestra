@@ -5,9 +5,11 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import in.ramanujam.common.properties.MongoDBProperties;
+import org.springframework.stereotype.Component;
 
 import java.net.UnknownHostException;
 
+@Component
 public class MongoUtils
 {
   private static DBCollection collection;
@@ -22,7 +24,7 @@ public class MongoUtils
     return db.getCollection( properties.getMongoCollection() );
   }
 
-  public static DBCollection getCollection()
+  public DBCollection getCollection()
   {
     if( collection != null )
       return collection;

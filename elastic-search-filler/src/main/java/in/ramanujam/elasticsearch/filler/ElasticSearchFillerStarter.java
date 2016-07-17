@@ -17,7 +17,7 @@ public class ElasticSearchFillerStarter
     public static void main(String[] args) throws JsonProcessingException
     {
         context = SpringApplication.run(ElasticSearchFillerStarter.class, args);
-        ElasticSearchFiller.writeIsFinished( false );
+        new ElasticSearchFiller().writeIsFinished( false );
     }
 
     public static void shutdown()

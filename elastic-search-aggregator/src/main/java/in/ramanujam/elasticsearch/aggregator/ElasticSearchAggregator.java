@@ -17,15 +17,16 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ElasticSearchAggregator
 {
-  private static ElasticSearchAggregator instance = new ElasticSearchAggregator();
   private Client client;
   private String index;
   private String type;
@@ -49,11 +50,6 @@ public class ElasticSearchAggregator
     {
       throw new RuntimeException( e );
     }
-  }
-
-  public static ElasticSearchAggregator getInstance()
-  {
-    return instance;
   }
 
   public List<MinerRecord> retrieveRecords( int size )
@@ -96,12 +92,12 @@ public class ElasticSearchAggregator
     try
     {
       writeESRecordToMongo( minerRecord, collection );
-      removeRecord( minerRecord );
+      removeRecord(minerRecord);
     }
     catch( Exception e ){}
   }
 
-  private static WriteResult writeESRecordToMongo( MinerRecord esRecord, DBCollection collection  )
+  private WriteResult writeESRecordToMongo( MinerRecord esRecord, DBCollection collection  )
   {
     BasicDBObject document = new BasicDBObject();
 
@@ -135,7 +131,7 @@ public class ElasticSearchAggregator
     }
   }
 
-  private static void flushElasticSearch( Client client, String index )
+  private void flushElasticSearch( Client client, String index )
   {
     FlushResponse flushResponse = client.admin().indices().flush( Requests.flushRequest( index ) ).actionGet();
     int failedShards = flushResponse.getFailedShards();

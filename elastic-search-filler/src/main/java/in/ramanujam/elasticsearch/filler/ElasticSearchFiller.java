@@ -97,7 +97,7 @@ public class ElasticSearchFiller
     }
   }
 
-  public static void writeIsFinished( boolean isFinished ) throws JsonProcessingException
+  public void writeIsFinished( boolean isFinished ) throws JsonProcessingException
   {
     Map isFinishedMap = new HashMap<>();
     isFinishedMap.put( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished );
