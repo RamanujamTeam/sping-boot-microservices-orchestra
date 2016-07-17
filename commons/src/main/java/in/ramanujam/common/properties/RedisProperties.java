@@ -2,10 +2,10 @@ package in.ramanujam.common.properties;
 
 public class RedisProperties extends AbstractProperties
 {
-  private static final String CONTAINER_REDIS_NAME = "redis.container.name"; // TODO: rename in REDIS_CONTAINER...
-  private static final String CONTAINER_REDIS_HOST = "redis.container.host";
-  private static final String CONTAINER_REDIS_PORT = "redis.container.port";
-  private static final String CONTAINER_REDIS_EXTERNAL_PORT = "redis.container.externalPort";
+  private static final String REDIS_CONTAINER_NAME = "redis.container.name";
+  private static final String REDIS_CONTAINER_HOST = "redis.container.host";
+  private static final String REDIS_CONTAINER_PORT = "redis.container.port";
+  private static final String REDIS_CONTAINER_EXTERNAL_PORT = "redis.container.externalPort";
   private static final String REDIS_HASHSET_NAME = "redis.hashset.name";
   private static final String REDIS_IS_FINISHED_KEY = "redis.isfinished.key";
   private static final String REDIS_TO_MONGO_IS_FINISHED_KEY = "redis.tomongo.isfinished.key";
@@ -25,22 +25,22 @@ public class RedisProperties extends AbstractProperties
 
   public String getRedisContainerName()
   {
-    return getAppProps().getProperty( CONTAINER_REDIS_NAME );
+    return getAppProps().getProperty(REDIS_CONTAINER_NAME);
   }
 
   public String getRedisContainerHost()
   {
-    return getAppProps().getProperty( CONTAINER_REDIS_HOST );
+    return getAppProps().getProperty(REDIS_CONTAINER_HOST);
   }
 
   public Integer getRedisContainerPort()
   {
-    return Integer.parseInt( getAppProps().getProperty( CONTAINER_REDIS_PORT ) );
+    return Integer.parseInt( getAppProps().getProperty(REDIS_CONTAINER_PORT) );
   }
 
   public Integer getRedisContainerExternalPort()
   {
-    return Integer.parseInt( getAppProps().getProperty( CONTAINER_REDIS_EXTERNAL_PORT ) );
+    return Integer.parseInt( getAppProps().getProperty(REDIS_CONTAINER_EXTERNAL_PORT) );
   }
 
   public String getRedisHashsetName()

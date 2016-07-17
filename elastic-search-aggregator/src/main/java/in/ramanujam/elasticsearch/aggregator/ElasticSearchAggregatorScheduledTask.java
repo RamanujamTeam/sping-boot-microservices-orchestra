@@ -18,7 +18,7 @@ public class ElasticSearchAggregatorScheduledTask
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException
     {
-        List<MinerRecord> records = ElasticSearchAggregator.getInstance().retrieveAllRecords();
+        List<MinerRecord> records = ElasticSearchAggregator.getInstance().retrieveRecords( 100 );
 
         records.stream()
                 .filter( record -> !record.equals(new MinerRecord()) )
