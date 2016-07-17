@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collection;
+import java.util.List;
 
 @Component
 public class RedisFillerScheduledTask {
@@ -28,29 +30,20 @@ public class RedisFillerScheduledTask {
     @Value("redis-data.xml")
     private Resource redisDataFile;
 
-    private int curPos = 1;
-    // TODO: add StAX
+    private int entriesParsed = 0;
+    private int batchSize = 100;
+    private BitcoinsParser parser = new BitcoinsParser();
+    // TODO: add batching
     @Scheduled(fixedDelay = 100) // TODO: 30 secs
-    public void runWithDelay() throws ParserConfigurationException, IOException, SAXException {
-// TODO: add batching
-        File fXmlFile = redisDataFile.getFile();
-        String trimmedXML = String.join("", Files.readAllLines(fXmlFile.toPath(), StandardCharsets.UTF_8))
-            .replaceAll(">\\s+<", "><").trim();
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse( new InputSource(new ByteArrayInputStream(trimmedXML.getBytes("utf-8"))) );
+    public void runWithDelay() throws Exception
+    {
+        File xmlFile = redisDataFile.getFile();
 
-        NodeList records = doc.getDocumentElement().getChildNodes();
+        List<BitcoinRecord> bitcoins = parser.parseRecords( xmlFile, entriesParsed, batchSize );
+        bitcoins.stream().forEach( RedisFiller::addBitcoin );
+        entriesParsed += bitcoins.size();
 
-        int lastIndex = Math.min( curPos + 100, records.getLength() );
-        while ( curPos < lastIndex){ // TODO: replace with reading logic that does not rely on input file formatting
-            String id = records.item( curPos ).getChildNodes().item( 0).getChildNodes().item( 0).getNodeValue();
-            String key = records.item( curPos ).getChildNodes().item( 1).getChildNodes().item( 0).getNodeValue();
-            RedisFiller.addBitcoin( new BitcoinRecord( Integer.valueOf( id ), key ) );
-            curPos++;
-        }
-
-        if( curPos >= records.getLength() )
+        if( bitcoins.isEmpty() )
         {
             RedisFiller.writeIsFinished( true );
             log.info( "RedisFiller :: Successfully finished!" );
