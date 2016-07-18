@@ -37,6 +37,6 @@ Similar to Redis Aggregator, it reads data from ElasticSearch and writes to Mong
 * ElasticSearch
 * RabbitMQ
 
-# Prospects
+# Next steps
 * Test coverage
 * Integrating ZooKeeper to avoid duplicating properties files
