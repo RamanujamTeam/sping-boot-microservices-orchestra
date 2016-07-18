@@ -10,18 +10,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan
-public class ElasticSearchFillerStarter
-{
+public class ElasticSearchFillerStarter {
     private static ConfigurableApplicationContext context;
 
-    public static void main(String[] args) throws JsonProcessingException
-    {
+    public static void main(String[] args) throws JsonProcessingException {
         context = SpringApplication.run(ElasticSearchFillerStarter.class, args);
-        new ElasticSearchFiller().writeIsFinished( false );
+        new ElasticSearchFiller().writeIsFinished(false);
     }
 
-    public static void shutdown()
-    {
+    public static void shutdown() {
         context.close();
     }
 }

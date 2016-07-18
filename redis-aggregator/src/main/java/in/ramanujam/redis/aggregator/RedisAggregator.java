@@ -18,69 +18,62 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class RedisAggregator
-{
-  private static int writeCount = 0;
-  private static int removeCount = 0;
-  private static final Logger log = LoggerFactory.getLogger( RedisAggregator.class );
-  public List<BitcoinRecord> retrieveRecords( int size )
-  {
-    List<BitcoinRecord> bitcoins = new ArrayList<>();
-    try( Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
-                                  RedisProperties.getInstance().getRedisContainerExternalPort()) )
-    {
-      String cur = redis.clients.jedis.ScanParams.SCAN_POINTER_START;
-      ScanParams params = new ScanParams().count(size);
+public class RedisAggregator {
+    private static final Logger log = LoggerFactory.getLogger(RedisAggregator.class);
+    private static int writeCount = 0;
+    private static int removeCount = 0;
 
-      ScanResult<Map.Entry<String, String>> scanResult = jedis.hscan(RedisProperties.getInstance().getRedisHashsetName(), cur, params);
-      bitcoins = scanResult.getResult().stream()
-              .map( entry -> new BitcoinRecord( Integer.parseInt( entry.getKey() ), entry.getValue() ) )
-              .collect( Collectors.toList() );
+    public List<BitcoinRecord> retrieveRecords(int size) {
+        List<BitcoinRecord> bitcoins = new ArrayList<>();
+        try (Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
+                RedisProperties.getInstance().getRedisContainerExternalPort())) {
+            String cur = redis.clients.jedis.ScanParams.SCAN_POINTER_START;
+            ScanParams params = new ScanParams().count(size);
+
+            ScanResult<Map.Entry<String, String>> scanResult = jedis.hscan(RedisProperties.getInstance().getRedisHashsetName(), cur, params);
+            bitcoins = scanResult.getResult().stream()
+                    .map(entry -> new BitcoinRecord(Integer.parseInt(entry.getKey()), entry.getValue()))
+                    .collect(Collectors.toList());
+        } catch (RuntimeException e) {
+        }
+        return bitcoins;
     }
-    catch( RuntimeException e ){ }
-    return bitcoins;
-  }
 
-  public void removeRecordFromRedis( BitcoinRecord redisRecord )
-  {
-    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
-                             RedisProperties.getInstance().getRedisContainerExternalPort());
-    jedis.hdel( RedisProperties.getInstance().getRedisHashsetName(), String.valueOf( redisRecord.getId() ) );
-    jedis.close();
-    log.info( "RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount );
-  }
-
-  public void moveRecordFromRedisToMongo( BitcoinRecord redisRecord, DBCollection collection )
-  {
-    try
-    {
-      writeRedisRecordToMongo( redisRecord, collection );
-      removeRecordFromRedis( redisRecord );
+    public void removeRecordFromRedis(BitcoinRecord redisRecord) {
+        Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
+                RedisProperties.getInstance().getRedisContainerExternalPort());
+        jedis.hdel(RedisProperties.getInstance().getRedisHashsetName(), String.valueOf(redisRecord.getId()));
+        jedis.close();
+        log.info("RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount);
     }
-    catch( Exception e ){}
-  }
 
-  private WriteResult writeRedisRecordToMongo( BitcoinRecord redisRecord, DBCollection collection )
-  {
-    BasicDBObject document = new BasicDBObject();
+    public void moveRecordFromRedisToMongo(BitcoinRecord redisRecord, DBCollection collection) {
+        try {
+            writeRedisRecordToMongo(redisRecord, collection);
+            removeRecordFromRedis(redisRecord);
+        } catch (Exception e) {
+        }
+    }
 
-    BasicDBObject values = new BasicDBObject()
-            .append( "bitcoin", redisRecord.getKey() );
+    private WriteResult writeRedisRecordToMongo(BitcoinRecord redisRecord, DBCollection collection) {
+        BasicDBObject document = new BasicDBObject();
 
-    document.append( "$set", values );
+        BasicDBObject values = new BasicDBObject()
+                .append("bitcoin", redisRecord.getKey());
 
-    BasicDBObject searchQuery = new BasicDBObject().append( "_id", redisRecord.getId() );
-    WriteResult result = collection.update( searchQuery, document, true, false );
-    log.info( "RedisToMongo :: Wrote to Mongo :: Id = " + redisRecord.getId() + " count = " + ++writeCount );
-    return result;
-  }
+        document.append("$set", values);
 
-  public Boolean isRedisFillerFinished()
-  {
-    Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
-                             RedisProperties.getInstance().getRedisContainerExternalPort() );
-    String isRedisFillerFinished = jedis.get( RedisProperties.getInstance().getRedisIsFinishedKey() );
-    jedis.close();
-    return Boolean.valueOf( isRedisFillerFinished );
-  }
+        BasicDBObject searchQuery = new BasicDBObject().append("_id", redisRecord.getId());
+        WriteResult result = collection.update(searchQuery, document, true, false);
+        log.info("RedisToMongo :: Wrote to Mongo :: Id = " + redisRecord.getId() + " count = " + ++writeCount);
+        return result;
+    }
+
+    public Boolean isRedisFillerFinished() {
+        Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
+                RedisProperties.getInstance().getRedisContainerExternalPort());
+        String isRedisFillerFinished = jedis.get(RedisProperties.getInstance().getRedisIsFinishedKey());
+        jedis.close();
+        return Boolean.valueOf(isRedisFillerFinished);
+    }
 }

@@ -7,16 +7,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class ElasticSearchToMongoStarter
-{
+public class ElasticSearchToMongoStarter {
     private static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
-        context = SpringApplication.run( ElasticSearchToMongoStarter.class, args);
+        context = SpringApplication.run(ElasticSearchToMongoStarter.class, args);
     }
 
-    public static void shutdown()
-    {
+    public static void shutdown() {
         context.close();
     }
 }
