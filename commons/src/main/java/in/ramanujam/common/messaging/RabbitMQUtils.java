@@ -9,6 +9,8 @@ import java.util.concurrent.TimeoutException;
 
 public class RabbitMQUtils
 {
+  private static final int maxTries = 200;
+  private static final int retryDelayMs = 200;
   public static Connection getConnection()
   {
     ConnectionFactory factory = new ConnectionFactory();
@@ -20,10 +22,9 @@ public class RabbitMQUtils
   private static Connection createConnection( ConnectionFactory factory )
   {
     int count = 0;
-    int maxTries = 20;
     while(true) {
       try {
-        Thread.sleep( 3000 ); // wait for RabbitMQ docker to start
+        Thread.sleep( retryDelayMs ); // wait for RabbitMQ docker to start
         return factory.newConnection();
       } catch ( IOException | TimeoutException | InterruptedException e ) {
         if (++count == maxTries) throw new RuntimeException( e );
