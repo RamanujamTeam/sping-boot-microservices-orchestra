@@ -7,6 +7,7 @@ import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
@@ -16,12 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class RedisAggregator
 {
   private static int writeCount = 0;
   private static int removeCount = 0;
   private static final Logger log = LoggerFactory.getLogger( RedisAggregator.class );
-  public static List<BitcoinRecord> retrieveRecords( int size )
+  public List<BitcoinRecord> retrieveRecords( int size )
   {
     List<BitcoinRecord> bitcoins = new ArrayList<>();
     try( Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
@@ -39,7 +41,7 @@ public class RedisAggregator
     return bitcoins;
   }
 
-  public static void removeRecordFromRedis( BitcoinRecord redisRecord )
+  public void removeRecordFromRedis( BitcoinRecord redisRecord )
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort());
@@ -48,7 +50,7 @@ public class RedisAggregator
     log.info( "RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount );
   }
 
-  public static void moveRecordFromRedisToMongo( BitcoinRecord redisRecord, DBCollection collection )
+  public void moveRecordFromRedisToMongo( BitcoinRecord redisRecord, DBCollection collection )
   {
     try
     {
@@ -58,7 +60,7 @@ public class RedisAggregator
     catch( Exception e ){}
   }
 
-  private static WriteResult writeRedisRecordToMongo( BitcoinRecord redisRecord, DBCollection collection )
+  private WriteResult writeRedisRecordToMongo( BitcoinRecord redisRecord, DBCollection collection )
   {
     BasicDBObject document = new BasicDBObject();
 
@@ -73,7 +75,7 @@ public class RedisAggregator
     return result;
   }
 
-  public static Boolean isRedisFillerFinished()
+  public Boolean isRedisFillerFinished()
   {
     Jedis jedis = new Jedis( RedisProperties.getInstance().getRedisContainerHost(),
                              RedisProperties.getInstance().getRedisContainerExternalPort() );

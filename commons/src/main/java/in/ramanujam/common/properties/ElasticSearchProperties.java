@@ -1,11 +1,5 @@
 package in.ramanujam.common.properties;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 30.06.2016
- * Time: 23:21
- */
 public class ElasticSearchProperties extends AbstractProperties
 {
 

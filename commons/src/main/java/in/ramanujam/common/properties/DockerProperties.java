@@ -1,13 +1,5 @@
 package in.ramanujam.common.properties;
 
-import in.ramanujam.common.properties.AbstractProperties;
-
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 30.06.2016
- * Time: 23:21
- */
 public class DockerProperties extends AbstractProperties
 {
   private static final String DOCKER_CERT_PATH = "docker.cert.path";

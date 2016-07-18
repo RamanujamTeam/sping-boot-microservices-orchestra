@@ -23,7 +23,7 @@ public class ElasticSearchFillerScheduledTask
     {
         if( filler.fillItems( curPos, PAGE_SIZE ) == 0 )
         {
-            ElasticSearchFiller.writeIsFinished( true );
+            filler.writeIsFinished( true );
             log.info( "ElasticSearchFiller :: Successfully finished!");
             ElasticSearchFillerStarter.shutdown();
         }

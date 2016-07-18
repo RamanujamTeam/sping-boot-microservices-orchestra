@@ -31,7 +31,6 @@ public class ElasticSearchFiller
   private static String index = null;
   private static String type = null;
 
-  //debug
   private static int count = 0;
 
   @Value("elastic-data.json")
@@ -98,7 +97,7 @@ public class ElasticSearchFiller
     }
   }
 
-  public static void writeIsFinished( boolean isFinished ) throws JsonProcessingException
+  public void writeIsFinished( boolean isFinished ) throws JsonProcessingException
   {
     Map isFinishedMap = new HashMap<>();
     isFinishedMap.put( ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished );

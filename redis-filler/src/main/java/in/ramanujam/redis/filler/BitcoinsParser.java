@@ -1,6 +1,7 @@
 package in.ramanujam.redis.filler;
 
 import in.ramanujam.common.model.BitcoinRecord;
+import org.springframework.stereotype.Component;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -10,12 +11,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Denys Konakhevych
- * Date: 17.07.2016
- * Time: 15:13
- */
+@Component
 public class BitcoinsParser
 {
   public List<BitcoinRecord> parseRecords( File xmlFile, int skip, int limit ) throws Exception
