@@ -13,6 +13,7 @@ import java.util.List;
 
 @Component
 public class BitcoinsParser {
+
     public List<BitcoinRecord> parseRecords(File xmlFile, int skip, int limit) throws Exception {
         XMLStreamReader reader = null;
         try (FileReader fileReader = new FileReader(xmlFile)) {

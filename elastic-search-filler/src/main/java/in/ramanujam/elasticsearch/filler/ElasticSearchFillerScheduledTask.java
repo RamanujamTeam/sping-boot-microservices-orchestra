@@ -10,13 +10,17 @@ import java.io.IOException;
 
 @Component
 public class ElasticSearchFillerScheduledTask {
+
     public static final int PAGE_SIZE = 100;
+
     private static final Logger log = LoggerFactory.getLogger(ElasticSearchFillerScheduledTask.class);
+
     @Autowired
     ElasticSearchFiller filler;
+
     private int curPos = 0;
 
-    @Scheduled(fixedDelay = 1000) // TODO: 30 secs
+    @Scheduled(fixedDelay = 30_000)
     public void runWithDelay() throws IOException {
         if (filler.fillItems(curPos, PAGE_SIZE) == 0) {
             filler.writeIsFinished(true);

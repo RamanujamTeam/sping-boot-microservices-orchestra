@@ -14,21 +14,27 @@ import java.util.List;
 
 @Component
 public class RedisFillerScheduledTask {
+
+    public static final int BATCH_SIZE = 100;
+
     private static final Logger log = LoggerFactory.getLogger(RedisFillerScheduledTask.class);
+
     @Autowired
     RedisFiller filler;
+
     @Value("redis-data.xml")
     private Resource redisDataFile;
+
     @Autowired
     private BitcoinsParser parser;
-    private int entriesParsed = 0;
-    private int batchSize = 100;
 
-    @Scheduled(fixedDelay = 100) // TODO: 30 secs
+    private int entriesParsed = 0;
+
+    @Scheduled(fixedDelay = 30_000)
     public void runWithDelay() throws Exception {
         File xmlFile = redisDataFile.getFile();
 
-        List<BitcoinRecord> bitcoins = parser.parseRecords(xmlFile, entriesParsed, batchSize);
+        List<BitcoinRecord> bitcoins = parser.parseRecords(xmlFile, entriesParsed, BATCH_SIZE);
         filler.addBitcoins(bitcoins);
         entriesParsed += bitcoins.size();
 
