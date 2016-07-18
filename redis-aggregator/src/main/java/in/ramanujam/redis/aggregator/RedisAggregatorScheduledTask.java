@@ -18,7 +18,7 @@ public class RedisAggregatorScheduledTask
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException
     {
-        List<BitcoinRecord> records = RedisAggregator.retrieveAllRecords();
+        List<BitcoinRecord> records = RedisAggregator.retrieveRecords( 100 );
         for( BitcoinRecord bitcoinRecord : records )
         {
             RedisAggregator.moveRecordFromRedisToMongo( bitcoinRecord, MongoUtils.getCollection() );
