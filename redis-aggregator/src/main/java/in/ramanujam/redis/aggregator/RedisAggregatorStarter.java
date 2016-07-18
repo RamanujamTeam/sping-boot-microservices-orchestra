@@ -9,15 +9,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @ComponentScan
-public class RedisAggregatorStarter
-{
+public class RedisAggregatorStarter {
     private static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
-        context = SpringApplication.run( RedisAggregatorStarter.class, args);
+        context = SpringApplication.run(RedisAggregatorStarter.class, args);
     }
-    public static void shutdown()
-    {
+
+    public static void shutdown() {
         context.close();
     }
 }

@@ -15,11 +15,10 @@ public class RedisFillerStarter {
 
     public static void main(String[] args) {
         context = SpringApplication.run(RedisFillerStarter.class, args);
-        new RedisFiller().writeIsFinished( false );
+        new RedisFiller().writeIsFinished(false);
     }
 
-    public static void shutdown()
-    {
+    public static void shutdown() {
         context.close();
     }
 }

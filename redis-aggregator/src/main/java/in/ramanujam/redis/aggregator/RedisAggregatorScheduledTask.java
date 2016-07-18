@@ -13,27 +13,23 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class RedisAggregatorScheduledTask
-{
+public class RedisAggregatorScheduledTask {
+    private static final Logger log = LoggerFactory.getLogger(RedisAggregatorScheduledTask.class);
     @Autowired
     RedisAggregator aggregator;
     @Autowired
     MongoUtils mongoUtils;
 
-    private static final Logger log = LoggerFactory.getLogger( RedisAggregatorScheduledTask.class );
     @Scheduled(fixedDelay = 100)
-    public void runWithDelay() throws IOException
-    {
+    public void runWithDelay() throws IOException {
         List<BitcoinRecord> records = aggregator.retrieveRecords(100);
-        for( BitcoinRecord bitcoinRecord : records )
-        {
-            aggregator.moveRecordFromRedisToMongo( bitcoinRecord, mongoUtils.getCollection() );
+        for (BitcoinRecord bitcoinRecord : records) {
+            aggregator.moveRecordFromRedisToMongo(bitcoinRecord, mongoUtils.getCollection());
         }
 
-        if( records.size() == 0 && aggregator.isRedisFillerFinished() )
-        {
-            MessageBus.getInstance().sendMessage( RedisProperties.getInstance().getRedisToMongoIsFinishedKey() );
-            log.info( "RedisToMongo :: Successfully finished!");
+        if (records.size() == 0 && aggregator.isRedisFillerFinished()) {
+            MessageBus.getInstance().sendMessage(RedisProperties.getInstance().getRedisToMongoIsFinishedKey());
+            log.info("RedisToMongo :: Successfully finished!");
             RedisAggregatorStarter.shutdown();
         }
     }

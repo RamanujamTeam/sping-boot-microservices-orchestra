@@ -13,34 +13,29 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class ElasticSearchAggregatorScheduledTask
-{
+public class ElasticSearchAggregatorScheduledTask {
+    private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregatorScheduledTask.class);
     @Autowired
     ElasticSearchAggregator aggregator;
-
     @Autowired
     MongoUtils mongoUtils;
 
-    private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregatorScheduledTask.class);
     @Scheduled(fixedDelay = 100)
-    public void runWithDelay() throws IOException
-    {
+    public void runWithDelay() throws IOException {
         List<MinerRecord> records = aggregator.retrieveRecords(100);
 
         records.stream()
-                .filter( record -> !record.equals(new MinerRecord()) )
+                .filter(record -> !record.equals(new MinerRecord()))
                 .forEach(record -> aggregator.moveRecordFromElasticSearchToMongo(record, mongoUtils.getCollection()));
 
-        if( noMoreRecords( records ) )
-        {
-            MessageBus.getInstance().sendMessage( ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey() );
+        if (noMoreRecords(records)) {
+            MessageBus.getInstance().sendMessage(ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey());
             log.info("ElasticSearchToMongo :: Successfully finished!");
             ElasticSearchToMongoStarter.shutdown();
         }
     }
 
-    private boolean noMoreRecords( List records )
-    {
+    private boolean noMoreRecords(List records) {
         return aggregator.isElasticSearchFillerFinished()
                 && records.size() == 1;
     }
