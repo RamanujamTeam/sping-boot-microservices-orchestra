@@ -9,12 +9,26 @@ import java.util.concurrent.TimeoutException;
 
 public class RabbitMQUtils
 {
-  public static Connection getConnection() throws IOException, TimeoutException, InterruptedException
+  private static final int MAX_TRIES = 200;
+  private static final int RETRY_DELAY_MS = 200;
+  public static Connection getConnection()
   {
-    Thread.sleep( 5000 ); // TODO: this is a stupid fix - connection factory throws exception if try to connect to docker container too promptly. We need a better solution than this :-)
     ConnectionFactory factory = new ConnectionFactory();
     factory.setHost( RabbitMQProperties.getInstance().getRabbitMQContainerHost() );
     factory.setPort( RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort() );
-    return factory.newConnection();
+    return createConnection( factory );
+  }
+
+  private static Connection createConnection( ConnectionFactory factory )
+  {
+    int count = 0;
+    while(true) {
+      try {
+        Thread.sleep( RETRY_DELAY_MS ); // wait for RabbitMQ docker to start
+        return factory.newConnection();
+      } catch ( IOException | TimeoutException | InterruptedException e ) {
+        if (++count == MAX_TRIES ) throw new RuntimeException( e );
+      }
+    }
   }
 }

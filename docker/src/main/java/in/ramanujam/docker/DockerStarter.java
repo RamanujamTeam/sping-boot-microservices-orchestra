@@ -22,7 +22,7 @@ public class DockerStarter
   private static boolean elasticToMongoFinished = false;
   private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
 
-  public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException
+  public static void main( String[] args ) throws IOException, InterruptedException
   {
     DockerClient dockerClient = DockerClientFactory.getClient();
 
