@@ -5,4 +5,5 @@ include 'docker'
 include 'redis-filler'
 include 'redis-aggregator'
 include 'elastic-search-aggregator'
+include 'cloud-config'
 
