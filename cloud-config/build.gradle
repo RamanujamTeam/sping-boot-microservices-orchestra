@@ -17,6 +17,6 @@ buildscript {
 dependencies {
     compile  project(':commons')
     compile('org.springframework.boot:spring-boot-starter')
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-config-server', version: '1.1.0.RELEASE'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-config-server', version: '1.1.2.RELEASE'
 
 }
