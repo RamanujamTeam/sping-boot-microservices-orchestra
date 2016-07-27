@@ -1,4 +1,4 @@
-package in.ramanujam.docker;
+package in.ramanujam.common.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;

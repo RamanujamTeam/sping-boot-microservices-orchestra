@@ -6,6 +6,8 @@ import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
 import com.rabbitmq.client.*;
+import in.ramanujam.common.docker.DockerClientFactory;
+import in.ramanujam.common.docker.DockerUtils;
 import in.ramanujam.common.messaging.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
@@ -24,13 +26,13 @@ public class DockerStarter {
     public static void main(String[] args) throws IOException, InterruptedException {
         DockerClient dockerClient = DockerClientFactory.getClient();
 
-        CreateContainerResponse redisContainer = getRedisContainer(dockerClient);
-        CreateContainerResponse ESContainer = getElasticSearchContainer(dockerClient);
-        CreateContainerResponse rabbitMQContainer = getRabbitMQContainer(dockerClient);
+        CreateContainerResponse redisContainer = DockerUtils.getRedisContainer(dockerClient);
+        CreateContainerResponse ESContainer = DockerUtils.getElasticSearchContainer(dockerClient);
+        CreateContainerResponse rabbitMQContainer = DockerUtils.getRabbitMQContainer(dockerClient);
 
-        tryToStartContainer(dockerClient, redisContainer);
-        tryToStartContainer(dockerClient, ESContainer);
-        tryToStartContainer(dockerClient, rabbitMQContainer);
+        DockerUtils.tryToStartContainer(dockerClient, redisContainer);
+        DockerUtils.tryToStartContainer(dockerClient, ESContainer);
+        DockerUtils.tryToStartContainer(dockerClient, rabbitMQContainer);
 
         Connection connection = RabbitMQUtils.getConnection();
         Channel channel = connection.createChannel();
@@ -56,75 +58,13 @@ public class DockerStarter {
         while (!(redisToMongoFinished && elasticToMongoFinished)) {
             Thread.sleep(3000);
         }
-        closeConnection(channel, connection);
+        DockerUtils.closeConnection(channel, connection);
 
-        tryToStopContainer(dockerClient, redisContainer);
-        tryToStopContainer(dockerClient, ESContainer);
-        tryToStopContainer(dockerClient, rabbitMQContainer);
+        DockerUtils.tryToStopContainer(dockerClient, redisContainer);
+        DockerUtils.tryToStopContainer(dockerClient, ESContainer);
+        DockerUtils.tryToStopContainer(dockerClient, rabbitMQContainer);
         log.info("DockerStarter :: Successfully finished!");
     }
 
-    private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container) {
-        try {
-            dockerClient.startContainerCmd(container.getId()).exec();
-        } catch (Exception e) {
-            if (e.getMessage().contains("port is already allocated")) // consider this is our container from the previous program run
-                log.debug(e.getMessage());
-            else
-                throw e;
-        }
-    }
 
-    private static void tryToStopContainer(DockerClient dockerClient, CreateContainerResponse container) {
-        try {
-            dockerClient.stopContainerCmd(container.getId()).exec();
-        } catch (NotModifiedException e) {
-        }
-    }
-
-    private static CreateContainerResponse getRedisContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RedisProperties.getInstance().getRedisContainerPort(),
-                RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort(),
-                RedisProperties.getInstance().getRedisContainerName());
-    }
-
-    private static CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {
-        ElasticSearchProperties properties = new ElasticSearchProperties();
-
-        return createContainer(dockerClient, properties.getElasticsearchContainerPort(),
-                properties.getElasticsearchContainerHost(),
-                properties.getElasticsearchContainerExternalPort(),
-                properties.getElasticsearchContainerName());
-    }
-
-    private static CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerHost(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerName());
-    }
-
-    private static CreateContainerResponse createContainer(final DockerClient dockerClient, final Integer port, final String host,
-                                                           final Integer hostPort, final String containerName) {
-        ExposedPort exposedPort = ExposedPort.tcp(port);
-        Ports portBinding = new Ports();
-        portBinding.bind(exposedPort, new Ports.Binding(host, hostPort.toString()));
-
-        return dockerClient.createContainerCmd(containerName)
-                .withExposedPorts(exposedPort)
-                .withPortBindings(portBinding)
-                .exec();
-    }
-
-
-    private static void closeConnection(Channel channel, Connection connection) throws IOException {
-        try {
-            channel.close();
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        } finally {
-            connection.close();
-        }
-    }
 }
