@@ -1,7 +1,6 @@
 package in.ramanujam.redis.filler;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.CreateContainerResponse;
 import in.ramanujam.common.docker.DockerClientFactory;
 import in.ramanujam.common.docker.DockerUtils;
 import in.ramanujam.common.model.BitcoinRecord;
@@ -30,15 +29,15 @@ public class RedisFillerTest {
     RedisFiller redisFiller;
 
     private static DockerClient dockerClient;
-    private static CreateContainerResponse redisContainer;
+    private static String redisContainerId;
     private static RedisProperties props = RedisProperties.getInstance();
     private static Jedis jedis;
 
     @BeforeClass
     public static void setup() {
         dockerClient = DockerClientFactory.getClient();
-        redisContainer = DockerUtils.getRedisContainer(dockerClient); // TODO: replace CreateContainerResponse with container id
-        DockerUtils.tryToStartContainer(dockerClient, redisContainer);
+        redisContainerId = DockerUtils.getRedisContainerId(dockerClient);
+        DockerUtils.tryToStartContainer(dockerClient, redisContainerId);
         jedis = new Jedis(props.getRedisContainerHost(), props.getRedisContainerExternalPort());
     }
 
@@ -73,7 +72,7 @@ public class RedisFillerTest {
 
     @AfterClass
     public static void tearDown() {
-        DockerUtils.tryToStopContainer(dockerClient, redisContainer);
+        DockerUtils.tryToStopContainer(dockerClient, redisContainerId);
         jedis.close();
     }
 }

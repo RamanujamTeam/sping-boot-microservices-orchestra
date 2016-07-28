@@ -1,10 +1,6 @@
 package in.ramanujam.docker;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.exception.NotModifiedException;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
 import com.rabbitmq.client.*;
 import in.ramanujam.common.docker.DockerClientFactory;
 import in.ramanujam.common.docker.DockerUtils;
@@ -16,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
@@ -26,13 +21,13 @@ public class DockerStarter {
     public static void main(String[] args) throws IOException, InterruptedException {
         DockerClient dockerClient = DockerClientFactory.getClient();
 
-        CreateContainerResponse redisContainer = DockerUtils.getRedisContainer(dockerClient);
-        CreateContainerResponse ESContainer = DockerUtils.getElasticSearchContainer(dockerClient);
-        CreateContainerResponse rabbitMQContainer = DockerUtils.getRabbitMQContainer(dockerClient);
+        String redisContainerId = DockerUtils.getRedisContainerId(dockerClient);
+        String ESContainerId = DockerUtils.getElasticSearchContainerId(dockerClient);
+        String rabbitMQContainerId = DockerUtils.getRabbitMQContainerId(dockerClient);
 
-        DockerUtils.tryToStartContainer(dockerClient, redisContainer);
-        DockerUtils.tryToStartContainer(dockerClient, ESContainer);
-        DockerUtils.tryToStartContainer(dockerClient, rabbitMQContainer);
+        DockerUtils.tryToStartContainer(dockerClient, redisContainerId);
+        DockerUtils.tryToStartContainer(dockerClient, ESContainerId);
+        DockerUtils.tryToStartContainer(dockerClient, rabbitMQContainerId);
 
         Connection connection = RabbitMQUtils.getConnection();
         Channel channel = connection.createChannel();
@@ -60,9 +55,9 @@ public class DockerStarter {
         }
         DockerUtils.closeConnection(channel, connection);
 
-        DockerUtils.tryToStopContainer(dockerClient, redisContainer);
-        DockerUtils.tryToStopContainer(dockerClient, ESContainer);
-        DockerUtils.tryToStopContainer(dockerClient, rabbitMQContainer);
+        DockerUtils.tryToStopContainer(dockerClient, redisContainerId);
+        DockerUtils.tryToStopContainer(dockerClient, ESContainerId);
+        DockerUtils.tryToStopContainer(dockerClient, rabbitMQContainerId);
         log.info("DockerStarter :: Successfully finished!");
     }
 

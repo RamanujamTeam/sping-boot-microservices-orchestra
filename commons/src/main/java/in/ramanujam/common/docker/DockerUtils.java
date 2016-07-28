@@ -18,9 +18,10 @@ import java.util.concurrent.TimeoutException;
 
 public class DockerUtils {
     private static final Logger log = LoggerFactory.getLogger(DockerUtils.class);
-    public static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container) {
+
+    public static void tryToStartContainer(DockerClient dockerClient, String containerId) {
         try {
-            dockerClient.startContainerCmd(container.getId()).exec();
+            dockerClient.startContainerCmd(containerId).exec();
         } catch (Exception e) {
             if (e.getMessage().contains("port is already allocated")) // consider this is our container from the previous program run
                 log.debug(e.getMessage());
@@ -29,34 +30,37 @@ public class DockerUtils {
         }
     }
 
-    public static void tryToStopContainer(DockerClient dockerClient, CreateContainerResponse container) {
+    public static void tryToStopContainer(DockerClient dockerClient, String containerId) {
         try {
-            dockerClient.stopContainerCmd(container.getId()).exec();
+            dockerClient.stopContainerCmd(containerId).exec();
         } catch (NotModifiedException e) {
         }
     }
 
-    public static CreateContainerResponse getRedisContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RedisProperties.getInstance().getRedisContainerPort(),
+    public static String getRedisContainerId(DockerClient dockerClient) {
+        CreateContainerResponse response = createContainer(dockerClient, RedisProperties.getInstance().getRedisContainerPort(),
                 RedisProperties.getInstance().getRedisContainerHost(),
                 RedisProperties.getInstance().getRedisContainerExternalPort(),
                 RedisProperties.getInstance().getRedisContainerName());
+        return response.getId();
     }
 
-    public static CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {
+    public static String getElasticSearchContainerId(DockerClient dockerClient) {
         ElasticSearchProperties properties = new ElasticSearchProperties();
 
-        return createContainer(dockerClient, properties.getElasticsearchContainerPort(),
+        CreateContainerResponse response = createContainer(dockerClient, properties.getElasticsearchContainerPort(),
                 properties.getElasticsearchContainerHost(),
                 properties.getElasticsearchContainerExternalPort(),
                 properties.getElasticsearchContainerName());
+        return response.getId();
     }
 
-    public static CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
+    public static String getRabbitMQContainerId(DockerClient dockerClient) {
+        CreateContainerResponse response = createContainer(dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
                 RabbitMQProperties.getInstance().getRabbitMQContainerHost(),
                 RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort(),
                 RabbitMQProperties.getInstance().getRabbitMQContainerName());
+        return response.getId();
     }
 
     private static CreateContainerResponse createContainer(final DockerClient dockerClient, final Integer port, final String host,
