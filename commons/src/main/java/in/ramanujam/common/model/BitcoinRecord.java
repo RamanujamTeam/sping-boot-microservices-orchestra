@@ -1,5 +1,7 @@
 package in.ramanujam.common.model;
 
+import java.util.Objects;
+
 public class BitcoinRecord {
     private Integer id;
     private String key;
@@ -26,5 +28,19 @@ public class BitcoinRecord {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BitcoinRecord that = (BitcoinRecord) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(key, that.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, key);
     }
 }
