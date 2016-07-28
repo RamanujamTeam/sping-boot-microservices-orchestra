@@ -2,7 +2,7 @@ package in.ramanujam.common.model;
 
 import java.util.Objects;
 
-public class BitcoinRecord {
+public class BitcoinRecord implements Comparable<BitcoinRecord>{
     private Integer id;
     private String key;
 
@@ -42,5 +42,12 @@ public class BitcoinRecord {
     @Override
     public int hashCode() {
         return Objects.hash(id, key);
+    }
+
+    @Override
+    public int compareTo(BitcoinRecord o) {
+        if(this.getId() != o.getId())
+            return this.getId().compareTo(o.getId());
+        return this.getKey().compareTo(o.getKey());
     }
 }

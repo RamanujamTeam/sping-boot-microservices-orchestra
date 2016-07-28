@@ -17,12 +17,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration( classes = RedisFillerStarter.class )
+@SpringApplicationConfiguration(classes = RedisFillerStarter.class)
 public class RedisFillerTest {
 
     @Autowired
@@ -30,12 +31,15 @@ public class RedisFillerTest {
 
     private static DockerClient dockerClient;
     private static CreateContainerResponse redisContainer;
+    private static RedisProperties props = RedisProperties.getInstance();
+    private static Jedis jedis;
 
     @BeforeClass
-    public static void startRedisContainer() {
+    public static void setup() {
         dockerClient = DockerClientFactory.getClient();
         redisContainer = DockerUtils.getRedisContainer(dockerClient); // TODO: replace CreateContainerResponse with container id
         DockerUtils.tryToStartContainer(dockerClient, redisContainer);
+        jedis = new Jedis(props.getRedisContainerHost(), props.getRedisContainerExternalPort());
     }
 
     @Test
@@ -48,15 +52,28 @@ public class RedisFillerTest {
         redisFiller.addBitcoins(bitcoins);
 
         // test for Bitcoins in Redis
-        Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort());
-        Map<String, String> result = jedis.hgetAll(RedisProperties.getInstance().getRedisHashsetName());
+        Map<String, String> result = jedis.hgetAll(props.getRedisHashsetName());
         List<BitcoinRecord> bitcoinsFromRedis = result.entrySet().stream().map(entry -> new BitcoinRecord(Integer.valueOf(entry.getKey()), entry.getValue())).collect(Collectors.toList());
+
+        Collections.sort(bitcoins);
+        Collections.sort(bitcoinsFromRedis);
         Assert.assertEquals(bitcoins, bitcoinsFromRedis);
     }
 
+    @Test
+    public void testWriteIsFinished() {
+        redisFiller.writeIsFinished(true);
+        String finishedTrueString = jedis.get(props.getRedisIsFinishedKey());
+        Assert.assertTrue(Boolean.valueOf(finishedTrueString));
+
+        redisFiller.writeIsFinished(false);
+        String finishedFalseString = jedis.get(props.getRedisIsFinishedKey());
+        Assert.assertFalse(Boolean.valueOf(finishedFalseString));
+    }
+
     @AfterClass
-    public static void stopRedisContainer() {
+    public static void tearDown() {
         DockerUtils.tryToStopContainer(dockerClient, redisContainer);
+        jedis.close();
     }
 }
