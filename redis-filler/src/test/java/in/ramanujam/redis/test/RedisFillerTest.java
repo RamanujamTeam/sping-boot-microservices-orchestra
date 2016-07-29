@@ -1,19 +1,14 @@
-package in.ramanujam.redis.filler;
+package in.ramanujam.redis.test;
 
-import com.github.dockerjava.api.DockerClient;
-import in.ramanujam.common.docker.DockerClientFactory;
-import in.ramanujam.common.docker.DockerUtils;
 import in.ramanujam.common.model.BitcoinRecord;
-import in.ramanujam.common.properties.RedisProperties;
-import org.junit.AfterClass;
+import in.ramanujam.redis.filler.RedisFiller;
+import in.ramanujam.redis.filler.RedisFillerTestConfig;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,27 +17,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = RedisFillerStarter.class)
-public class RedisFillerTest {
+@SpringApplicationConfiguration(classes = RedisFillerTestConfig.class)
+public class RedisFillerTest extends AbstractRedisFillerTest{
 
     @Autowired
     RedisFiller redisFiller;
 
-    private static DockerClient dockerClient;
-    private static String redisContainerId;
-    private static RedisProperties props = RedisProperties.getInstance();
-    private static Jedis jedis;
-
-    @BeforeClass
-    public static void setup() {
-        dockerClient = DockerClientFactory.getClient();
-        redisContainerId = DockerUtils.getRedisContainerId(dockerClient);
-        DockerUtils.tryToStartContainer(dockerClient, redisContainerId);
-        jedis = new Jedis(props.getRedisContainerHost(), props.getRedisContainerExternalPort());
-    }
-
     @Test
     public void testAddBitcoins() {
+        jedis.flushAll();
         // Prepare Bitcoins
         List<BitcoinRecord> bitcoins = new ArrayList<>();
         for (int i = 0; i < 10; i++)
@@ -68,11 +51,5 @@ public class RedisFillerTest {
         redisFiller.writeIsFinished(false);
         String finishedFalseString = jedis.get(props.getRedisIsFinishedKey());
         Assert.assertFalse(Boolean.valueOf(finishedFalseString));
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        DockerUtils.tryToStopContainer(dockerClient, redisContainerId);
-        jedis.close();
     }
 }
