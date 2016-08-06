@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan({"in.ramanujam.elasticsearch.aggregator", "in.ramanujam.common.properties"})
+@ComponentScan({"in.ramanujam.elasticsearch.aggregator", "in.ramanujam.common.properties", "in.ramanujam.common.messaging"})
 @EnableScheduling
 public class ElasticSearchToMongoStarter {
     private static ConfigurableApplicationContext context;

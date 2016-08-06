@@ -21,6 +21,8 @@ public class RedisAggregatorScheduledTask {
     private MongoUtils mongoUtils;
     @Autowired
     private RedisProperties redisProps;
+    @Autowired
+    private MessageBus messageBus;
 
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException {
@@ -30,7 +32,7 @@ public class RedisAggregatorScheduledTask {
         }
 
         if (records.size() == 0 && aggregator.isRedisFillerFinished()) {
-            MessageBus.getInstance().sendMessage(redisProps.getRedisToMongoIsFinishedKey());
+            messageBus.sendMessage(redisProps.getRedisToMongoIsFinishedKey());
             log.info("RedisToMongo :: Successfully finished!");
             RedisAggregatorStarter.shutdown();
         }

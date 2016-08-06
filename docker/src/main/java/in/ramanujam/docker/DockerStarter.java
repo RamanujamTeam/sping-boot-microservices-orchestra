@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@ComponentScan({"in.ramanujam.docker", "in.ramanujam.common.properties"})
+@ComponentScan({"in.ramanujam.docker", "in.ramanujam.common"})
 public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
     private static boolean redisToMongoFinished = false;
@@ -31,9 +31,12 @@ public class DockerStarter {
 
     @Autowired
     private RedisProperties redisProps;
-
     @Autowired
     private ElasticSearchProperties elasticProps;
+    @Autowired
+    private RabbitMQUtils rabbitMQUtils;
+    @Autowired
+    private RabbitMQProperties rabbitProps;
 
     @Autowired
     private void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {
@@ -47,9 +50,9 @@ public class DockerStarter {
         tryToStartContainer(dockerClient, ESContainer);
         tryToStartContainer(dockerClient, rabbitMQContainer);
 
-        Connection connection = RabbitMQUtils.getConnection();
+        Connection connection = rabbitMQUtils.getConnection();
         Channel channel = connection.createChannel();
-        channel.queueDeclare(RabbitMQProperties.getInstance().getRabbitmqQueueName(), false, false, false, null);
+        channel.queueDeclare(rabbitProps.getRabbitmqQueueName(), false, false, false, null);
 
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
@@ -66,7 +69,7 @@ public class DockerStarter {
             }
         };
 
-        channel.basicConsume(RabbitMQProperties.getInstance().getRabbitmqQueueName(), true, consumer);
+        channel.basicConsume(rabbitProps.getRabbitmqQueueName(), true, consumer);
 
         while (!(redisToMongoFinished && elasticToMongoFinished)) {
             Thread.sleep(3000);
@@ -116,10 +119,10 @@ public class DockerStarter {
     }
 
     private CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerHost(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerName());
+        return createContainer(dockerClient, rabbitProps.getRabbitMQContainerPort(),
+                rabbitProps.getRabbitMQContainerHost(),
+                rabbitProps.getRabbitMQContainerExternalPort(),
+                rabbitProps.getRabbitMQContainerName());
     }
 
     private static CreateContainerResponse createContainer(final DockerClient dockerClient, final Integer port, final String host,

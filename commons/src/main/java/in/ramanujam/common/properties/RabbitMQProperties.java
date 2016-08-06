@@ -1,49 +1,43 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RabbitMQProperties extends AbstractProperties {
-    private static final String RABBITMQ_CONTAINER_NAME = "rabbitmq.container.name";
-    private static final String RABBITMQ_CONTAINER_HOST = "rabbitmq.container.host";
-    private static final String RABBITMQ_CONTAINER_PORT = "rabbitmq.container.port";
-    private static final String RABBITMQ_CONTAINER_EXTERNAL_PORT = "rabbitmq.container.externalPort";
-    private static final String RABBITMQ_QUEUE_NAME = "rabbitmq.queue.name";
+public class RabbitMQProperties {
 
-    private static final String CONFIG_FILE = "rabbitmq.properties";
+    @Value("${rabbitmq.container.name}")
+    private String rabbitmqContainerName;
 
-    private static RabbitMQProperties instance = new RabbitMQProperties();
+    @Value("${rabbitmq.container.host}")
+    private String rabbitmqContainerHost;
 
-    private RabbitMQProperties() {
-        load();
-    }
+    @Value("${rabbitmq.container.port}")
+    private int rabbitmqContainerPort;
 
-    public static RabbitMQProperties getInstance() {
-        return instance;
-    }
+    @Value("${rabbitmq.container.externalPort}")
+    private int rabbitmqContainerExternalPort;
+
+    @Value("${rabbitmq.queue.name}")
+    private String rabbitmqQueueName;
 
     public String getRabbitMQContainerName() {
-        return getAppProps().getProperty(RABBITMQ_CONTAINER_NAME);
+        return rabbitmqContainerName;
     }
 
     public String getRabbitMQContainerHost() {
-        return getAppProps().getProperty(RABBITMQ_CONTAINER_HOST);
+        return rabbitmqContainerHost;
     }
 
-    public Integer getRabbitMQContainerPort() {
-        return Integer.parseInt(getAppProps().getProperty(RABBITMQ_CONTAINER_PORT));
+    public int getRabbitMQContainerPort() {
+        return rabbitmqContainerPort;
     }
 
-    public Integer getRabbitMQContainerExternalPort() {
-        return Integer.parseInt(getAppProps().getProperty(RABBITMQ_CONTAINER_EXTERNAL_PORT));
+    public int getRabbitMQContainerExternalPort() {
+        return rabbitmqContainerExternalPort;
     }
 
     public String getRabbitmqQueueName() {
-        return getAppProps().getProperty(RABBITMQ_QUEUE_NAME);
-    }
-
-    @Override
-    protected String getFile() {
-        return CONFIG_FILE;
+        return rabbitmqQueueName;
     }
 }

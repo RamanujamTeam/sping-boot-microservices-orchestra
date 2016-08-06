@@ -4,35 +4,37 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import in.ramanujam.common.properties.RabbitMQProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+@Component
 public class MessageBus {
-    private static final MessageBus instance = new MessageBus();
     private final Channel channel;
 
-    private MessageBus() {
+    private RabbitMQProperties rabbitProps;
+
+    @Autowired
+    private MessageBus(RabbitMQProperties rabbitProps) {
         try {
+            this.rabbitProps = rabbitProps;
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(RabbitMQProperties.getInstance().getRabbitMQContainerHost());
-            factory.setPort(RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort());
+            factory.setHost(rabbitProps.getRabbitMQContainerHost());
+            factory.setPort(rabbitProps.getRabbitMQContainerExternalPort());
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
 
-            channel.queueDeclare(RabbitMQProperties.getInstance().getRabbitmqQueueName(), false, false, false, null);
+            channel.queueDeclare(rabbitProps.getRabbitmqQueueName(), false, false, false, null);
         } catch (TimeoutException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static MessageBus getInstance() {
-        return instance;
-    }
-
     public void sendMessage(String message) {
         try {
-            channel.basicPublish("", RabbitMQProperties.getInstance().getRabbitmqQueueName(), null, message.getBytes());
+            channel.basicPublish("", rabbitProps.getRabbitmqQueueName(), null, message.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

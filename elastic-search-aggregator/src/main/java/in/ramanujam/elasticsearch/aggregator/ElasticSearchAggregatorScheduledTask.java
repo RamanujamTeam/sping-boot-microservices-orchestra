@@ -21,6 +21,8 @@ public class ElasticSearchAggregatorScheduledTask {
     private MongoUtils mongoUtils;
     @Autowired
     private ElasticSearchProperties elasticProps;
+    @Autowired
+    private MessageBus messageBus;
 
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException {
@@ -31,7 +33,7 @@ public class ElasticSearchAggregatorScheduledTask {
                 .forEach(record -> aggregator.moveRecordFromElasticSearchToMongo(record, mongoUtils.getCollection()));
 
         if (noMoreRecords(records)) {
-            MessageBus.getInstance().sendMessage(elasticProps.getElasticsearchToMongoIsFinishedKey());
+            messageBus.sendMessage(elasticProps.getElasticsearchToMongoIsFinishedKey());
             log.info("ElasticSearchToMongo :: Successfully finished!");
             ElasticSearchToMongoStarter.shutdown();
         }
