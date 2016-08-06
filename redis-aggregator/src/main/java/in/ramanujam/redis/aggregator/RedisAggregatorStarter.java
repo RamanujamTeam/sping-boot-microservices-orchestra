@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan
+@ComponentScan({"in.ramanujam.redis.aggregator", "in.ramanujam.common.properties"})
 public class RedisAggregatorStarter {
     private static ConfigurableApplicationContext context;
 

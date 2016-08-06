@@ -10,7 +10,6 @@ import in.ramanujam.common.messaging.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
-import in.ramanujam.common.properties.RedisPropertiesComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,14 @@ import java.util.concurrent.TimeoutException;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@ComponentScan({"in.ramanujam.common.properties", "in.ramanujam.docker"})
+@ComponentScan({"in.ramanujam.docker", "in.ramanujam.common.properties"})
 public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
     private static boolean redisToMongoFinished = false;
     private static boolean elasticToMongoFinished = false;
 
     @Autowired
-    RedisPropertiesComponent redisPropertiesComponent;
+    RedisProperties redisProps;
 
     @Autowired
     void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {
@@ -58,7 +57,7 @@ public class DockerStarter {
                     elasticToMongoFinished = true;
                 }
 
-                if (RedisProperties.getInstance().getRedisToMongoIsFinishedKey().equals(message)) {
+                if (redisProps.getRedisToMongoIsFinishedKey().equals(message)) {
                     redisToMongoFinished = true;
                 }
             }
@@ -75,9 +74,6 @@ public class DockerStarter {
         tryToStopContainer(dockerClient, ESContainer);
         tryToStopContainer(dockerClient, rabbitMQContainer);
         log.info("DockerStarter :: Successfully finished!");
-
-
-
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -103,11 +99,11 @@ public class DockerStarter {
         }
     }
 
-    private static CreateContainerResponse getRedisContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RedisProperties.getInstance().getRedisContainerPort(),
-                RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort(),
-                RedisProperties.getInstance().getRedisContainerName());
+    private CreateContainerResponse getRedisContainer(DockerClient dockerClient) {
+        return createContainer(dockerClient, redisProps.getRedisContainerPort(),
+                redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort(),
+                redisProps.getRedisContainerName());
     }
 
     private static CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {

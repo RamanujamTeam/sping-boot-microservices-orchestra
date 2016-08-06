@@ -1,58 +1,57 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RedisProperties extends AbstractProperties {
-    private static final String REDIS_CONTAINER_NAME = "redis.container.name";
-    private static final String REDIS_CONTAINER_HOST = "redis.container.host";
-    private static final String REDIS_CONTAINER_PORT = "redis.container.port";
-    private static final String REDIS_CONTAINER_EXTERNAL_PORT = "redis.container.externalPort";
-    private static final String REDIS_HASHSET_NAME = "redis.hashset.name";
-    private static final String REDIS_IS_FINISHED_KEY = "redis.isfinished.key";
-    private static final String REDIS_TO_MONGO_IS_FINISHED_KEY = "redis.tomongo.isfinished.key";
-    private static final String CONFIG_FILE = "redis.properties";
+public class RedisProperties {
 
-    private static RedisProperties instance = new RedisProperties();
+    @Value("${redis.container.name}")
+    private String redisContainerName;
 
-    private RedisProperties() {
-        load();
-    }
+    @Value("${redis.container.host}")
+    private String redisContainerHost;
 
-    public static RedisProperties getInstance() {
-        return instance;
-    }
+    @Value("${redis.container.port}")
+    private int redisContainerPort;
+
+    @Value("${redis.container.externalPort}")
+    private int redisContainerExternalPort;
+
+    @Value("${redis.hashset.name}")
+    private String redisHashSetName;
+
+    @Value("${redis.isfinished.key}")
+    private String redisIsFinishedKey;
+
+    @Value("${redis.tomongo.isfinished.key}")
+    private String redisToMongoIsFinishedKey;
 
     public String getRedisContainerName() {
-        return getAppProps().getProperty(REDIS_CONTAINER_NAME);
+        return redisContainerName;
     }
 
     public String getRedisContainerHost() {
-        return getAppProps().getProperty(REDIS_CONTAINER_HOST);
+        return redisContainerHost;
     }
 
-    public Integer getRedisContainerPort() {
-        return Integer.parseInt(getAppProps().getProperty(REDIS_CONTAINER_PORT));
+    public int getRedisContainerPort() {
+        return redisContainerPort;
     }
 
-    public Integer getRedisContainerExternalPort() {
-        return Integer.parseInt(getAppProps().getProperty(REDIS_CONTAINER_EXTERNAL_PORT));
+    public int getRedisContainerExternalPort() {
+        return redisContainerExternalPort;
     }
 
     public String getRedisHashsetName() {
-        return getAppProps().getProperty(REDIS_HASHSET_NAME);
+        return redisHashSetName;
     }
 
     public String getRedisIsFinishedKey() {
-        return getAppProps().getProperty(REDIS_IS_FINISHED_KEY);
+        return redisIsFinishedKey;
     }
 
     public String getRedisToMongoIsFinishedKey() {
-        return getAppProps().getProperty(REDIS_TO_MONGO_IS_FINISHED_KEY);
-    }
-
-    @Override
-    protected String getFile() {
-        return CONFIG_FILE;
+        return redisToMongoIsFinishedKey;
     }
 }

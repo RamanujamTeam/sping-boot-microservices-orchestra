@@ -7,6 +7,7 @@ import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
@@ -22,15 +23,18 @@ public class RedisAggregator {
     private static final Logger log = LoggerFactory.getLogger(RedisAggregator.class);
     private static int writeCount = 0;
     private static int removeCount = 0;
+                            // TODO: remove all proprties files in the project
+    @Autowired
+    RedisProperties redisProps;
 
     public List<BitcoinRecord> retrieveRecords(int size) {
         List<BitcoinRecord> bitcoins = new ArrayList<>();
-        try (Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort())) {
+        try (Jedis jedis = new Jedis(redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort())) {
             String cur = redis.clients.jedis.ScanParams.SCAN_POINTER_START;
             ScanParams params = new ScanParams().count(size);
 
-            ScanResult<Map.Entry<String, String>> scanResult = jedis.hscan(RedisProperties.getInstance().getRedisHashsetName(), cur, params);
+            ScanResult<Map.Entry<String, String>> scanResult = jedis.hscan(redisProps.getRedisHashsetName(), cur, params);
             bitcoins = scanResult.getResult().stream()
                     .map(entry -> new BitcoinRecord(Integer.parseInt(entry.getKey()), entry.getValue()))
                     .collect(Collectors.toList());
@@ -40,9 +44,9 @@ public class RedisAggregator {
     }
 
     public void removeRecordFromRedis(BitcoinRecord redisRecord) {
-        Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort());
-        jedis.hdel(RedisProperties.getInstance().getRedisHashsetName(), String.valueOf(redisRecord.getId()));
+        Jedis jedis = new Jedis(redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort());
+        jedis.hdel(redisProps.getRedisHashsetName(), String.valueOf(redisRecord.getId()));
         jedis.close();
         log.info("RedisToMongo :: Removed from Redis :: Id = " + redisRecord.getId() + " count = " + ++removeCount);
     }
@@ -70,9 +74,9 @@ public class RedisAggregator {
     }
 
     public Boolean isRedisFillerFinished() {
-        Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort());
-        String isRedisFillerFinished = jedis.get(RedisProperties.getInstance().getRedisIsFinishedKey());
+        Jedis jedis = new Jedis(redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort());
+        String isRedisFillerFinished = jedis.get(redisProps.getRedisIsFinishedKey());
         jedis.close();
         return Boolean.valueOf(isRedisFillerFinished);
     }
