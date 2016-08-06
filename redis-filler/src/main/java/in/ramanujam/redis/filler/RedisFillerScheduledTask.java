@@ -20,7 +20,7 @@ public class RedisFillerScheduledTask {
     private static final Logger log = LoggerFactory.getLogger(RedisFillerScheduledTask.class);
 
     @Autowired
-    RedisFiller filler;
+    private RedisFiller filler;
 
     @Value("redis-data.xml")
     private Resource redisDataFile;

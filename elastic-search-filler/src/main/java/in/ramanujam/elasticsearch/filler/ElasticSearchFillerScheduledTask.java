@@ -16,14 +16,14 @@ public class ElasticSearchFillerScheduledTask {
     private static final Logger log = LoggerFactory.getLogger(ElasticSearchFillerScheduledTask.class);
 
     @Autowired
-    ElasticSearchFiller filler;
+    private ElasticSearchFiller elasticFiller;
 
     private int curPos = 0;
 
     @Scheduled(fixedDelay = 30_000)
     public void runWithDelay() throws IOException {
-        if (filler.fillItems(curPos, PAGE_SIZE) == 0) {
-            filler.writeIsFinished(true);
+        if (elasticFiller.fillItems(curPos, PAGE_SIZE) == 0) {
+            elasticFiller.writeIsFinished(true);
             log.info("ElasticSearchFiller :: Successfully finished!");
             ElasticSearchFillerStarter.shutdown();
         }

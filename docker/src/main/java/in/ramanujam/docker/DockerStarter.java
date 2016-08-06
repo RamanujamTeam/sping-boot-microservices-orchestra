@@ -30,10 +30,13 @@ public class DockerStarter {
     private static boolean elasticToMongoFinished = false;
 
     @Autowired
-    RedisProperties redisProps;
+    private RedisProperties redisProps;
 
     @Autowired
-    void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {
+    private ElasticSearchProperties elasticProps;
+
+    @Autowired
+    private void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {
         DockerClient dockerClient = dockerClientFactory.getClient();
         // TODO: можем автоматизировать запуск скрипта ./start_containers.sh ?
         CreateContainerResponse redisContainer = getRedisContainer(dockerClient);
@@ -53,7 +56,7 @@ public class DockerStarter {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
                     throws IOException {
                 String message = new String(body, "UTF-8");
-                if (ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey().equals(message)) {
+                if (elasticProps.getElasticsearchToMongoIsFinishedKey().equals(message)) {
                     elasticToMongoFinished = true;
                 }
 
@@ -78,7 +81,6 @@ public class DockerStarter {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         SpringApplication.run(DockerStarter.class, args);
-
     }
 
     private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container) {
@@ -106,16 +108,14 @@ public class DockerStarter {
                 redisProps.getRedisContainerName());
     }
 
-    private static CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {
-        ElasticSearchProperties properties = new ElasticSearchProperties();
-
-        return createContainer(dockerClient, properties.getElasticsearchContainerPort(),
-                properties.getElasticsearchContainerHost(),
-                properties.getElasticsearchContainerExternalPort(),
-                properties.getElasticsearchContainerName());
+    private CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {
+        return createContainer(dockerClient, elasticProps.getElasticsearchContainerPort(),
+                elasticProps.getElasticsearchContainerHost(),
+                elasticProps.getElasticsearchContainerExternalPort(),
+                elasticProps.getElasticsearchContainerName());
     }
 
-    private static CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
+    private CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
         return createContainer(dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
                 RabbitMQProperties.getInstance().getRabbitMQContainerHost(),
                 RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort(),

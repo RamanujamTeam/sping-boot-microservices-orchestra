@@ -16,11 +16,11 @@ import java.util.List;
 public class RedisAggregatorScheduledTask {
     private static final Logger log = LoggerFactory.getLogger(RedisAggregatorScheduledTask.class);
     @Autowired
-    RedisAggregator aggregator;
+    private RedisAggregator aggregator;
     @Autowired
-    MongoUtils mongoUtils;
+    private MongoUtils mongoUtils;
     @Autowired
-    RedisProperties redisProps;
+    private RedisProperties redisProps;
 
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException {

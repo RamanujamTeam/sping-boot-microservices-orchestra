@@ -16,9 +16,11 @@ import java.util.List;
 public class ElasticSearchAggregatorScheduledTask {
     private static final Logger log = LoggerFactory.getLogger(ElasticSearchAggregatorScheduledTask.class);
     @Autowired
-    ElasticSearchAggregator aggregator;
+    private ElasticSearchAggregator aggregator;
     @Autowired
-    MongoUtils mongoUtils;
+    private MongoUtils mongoUtils;
+    @Autowired
+    private ElasticSearchProperties elasticProps;
 
     @Scheduled(fixedDelay = 100)
     public void runWithDelay() throws IOException {
@@ -29,7 +31,7 @@ public class ElasticSearchAggregatorScheduledTask {
                 .forEach(record -> aggregator.moveRecordFromElasticSearchToMongo(record, mongoUtils.getCollection()));
 
         if (noMoreRecords(records)) {
-            MessageBus.getInstance().sendMessage(ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey());
+            MessageBus.getInstance().sendMessage(elasticProps.getElasticsearchToMongoIsFinishedKey());
             log.info("ElasticSearchToMongo :: Successfully finished!");
             ElasticSearchToMongoStarter.shutdown();
         }

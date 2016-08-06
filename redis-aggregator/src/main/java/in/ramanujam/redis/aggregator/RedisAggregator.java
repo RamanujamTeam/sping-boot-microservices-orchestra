@@ -25,7 +25,7 @@ public class RedisAggregator {
     private static int removeCount = 0;
                             // TODO: remove all proprties files in the project
     @Autowired
-    RedisProperties redisProps;
+    private RedisProperties redisProps;
 
     public List<BitcoinRecord> retrieveRecords(int size) {
         List<BitcoinRecord> bitcoins = new ArrayList<>();

@@ -1,64 +1,64 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ElasticSearchProperties extends AbstractProperties {
+public class ElasticSearchProperties {
 
-    private static final String ELASTICSEARCH_CONTAINER_NAME = "elasticsearch.container.name";
-    private static final String ELASTICSEARCH_CONTAINER_HOST = "elasticsearch.container.host";
-    private static final String ELASTICSEARCH_CONTAINER_PORT = "elasticsearch.container.port";
-    private static final String ELASTICSEARCH_CONTAINER_EXTERNAL_PORT = "elasticsearch.container.externalPort";
-    private static final String ELASTICSEARCH_INDEX_NAME = "elasticsearch.index.name";
-    private static final String ELASTICSEARCH_TYPE_NAME = "elasticsearch.type.name";
-    private static final String ELASTICSEARCH_IS_FINISHED_KEY = "elasticsearch.isfinished.key";
-    private static final String ELASTICSEARCH_TO_MONGO_IS_FINISHED_KEY = "elasticsearch.tomongo.finished.key";
-    private static final String CONFIG_FILE = "elasticsearch.properties";
+    @Value("${elasticsearch.container.name}")
+    private String elasticSearchContainerName;
 
-    private static ElasticSearchProperties instance = new ElasticSearchProperties();
+    @Value("${elasticsearch.container.host}")
+    private String elasticSearchContainerHost;
 
-    public ElasticSearchProperties() {
-        load();
-    }
+    @Value("${elasticsearch.container.port}")
+    private int elasticSearchContainerPort;
 
-    public static ElasticSearchProperties getInstance() {
-        return instance;
-    }
+    @Value("${elasticsearch.container.externalPort}")
+    private int elasticSearchExternalPort;
+
+    @Value("${elasticsearch.index.name}")
+    private String elasticSearchIndexName;
+
+    @Value("${elasticsearch.type.name}")
+    private String elasticSearchTypeName;
+
+    @Value("${elasticsearch.isfinished.key}")
+    private String elasticSearchIsFinishedKey;
+
+    @Value("${elasticsearch.tomongo.finished.key}")
+    private String elasticSearchToMongoIsFinishedKey;
 
     public String getElasticsearchContainerName() {
-        return getAppProps().getProperty(ELASTICSEARCH_CONTAINER_NAME);
+        return elasticSearchContainerName;
     }
 
     public String getElasticsearchContainerHost() {
-        return getAppProps().getProperty(ELASTICSEARCH_CONTAINER_HOST);
+        return elasticSearchContainerHost;
     }
 
-    public Integer getElasticsearchContainerPort() {
-        return Integer.parseInt(getAppProps().getProperty(ELASTICSEARCH_CONTAINER_PORT));
+    public int getElasticsearchContainerPort() {
+        return elasticSearchContainerPort;
     }
 
-    public Integer getElasticsearchContainerExternalPort() {
-        return Integer.parseInt(getAppProps().getProperty(ELASTICSEARCH_CONTAINER_EXTERNAL_PORT));
+    public int getElasticsearchContainerExternalPort() {
+        return elasticSearchExternalPort;
     }
 
     public String getElasticsearchIndexName() {
-        return getAppProps().getProperty(ELASTICSEARCH_INDEX_NAME);
+        return elasticSearchIndexName;
     }
 
     public String getElasticsearchTypeName() {
-        return getAppProps().getProperty(ELASTICSEARCH_TYPE_NAME);
+        return elasticSearchTypeName;
     }
 
     public String getElasticsearchIsFinishedKey() {
-        return getAppProps().getProperty(ELASTICSEARCH_IS_FINISHED_KEY);
+        return elasticSearchIsFinishedKey;
     }
 
     public String getElasticsearchToMongoIsFinishedKey() {
-        return getAppProps().getProperty(ELASTICSEARCH_TO_MONGO_IS_FINISHED_KEY);
-    }
-
-    @Override
-    protected String getFile() {
-        return CONFIG_FILE;
+        return elasticSearchToMongoIsFinishedKey;
     }
 }

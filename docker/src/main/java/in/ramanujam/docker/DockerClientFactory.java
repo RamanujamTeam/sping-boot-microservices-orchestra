@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class DockerClientFactory {
 
     @Autowired
-    DockerProperties dockerProps;
+    private DockerProperties dockerProps;
 
     public DockerClient getClient() {
         if (isWindows())

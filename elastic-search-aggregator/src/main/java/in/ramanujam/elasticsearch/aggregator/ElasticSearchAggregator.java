@@ -17,6 +17,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
@@ -33,15 +34,18 @@ public class ElasticSearchAggregator {
     private String index;
     private String type;
 
-    private ElasticSearchAggregator() {
-        ElasticSearchProperties elasticSearchProperties = new ElasticSearchProperties();
-        index = elasticSearchProperties.getElasticsearchIndexName();
-        type = elasticSearchProperties.getElasticsearchTypeName();
+    private ElasticSearchProperties elasticProps;
+
+    @Autowired
+    private ElasticSearchAggregator(ElasticSearchProperties elasticProps) {
+        this.elasticProps = elasticProps;
+        index = elasticProps.getElasticsearchIndexName();
+        type = elasticProps.getElasticsearchTypeName();
         try {
             client = TransportClient.builder().build()
                     .addTransportAddress(new InetSocketTransportAddress(
-                            InetAddress.getByName(elasticSearchProperties.getElasticsearchContainerHost()),
-                            elasticSearchProperties.getElasticsearchContainerExternalPort()));
+                            InetAddress.getByName(elasticProps.getElasticsearchContainerHost()),
+                            elasticProps.getElasticsearchContainerExternalPort()));
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
@@ -108,9 +112,9 @@ public class ElasticSearchAggregator {
     public Boolean isElasticSearchFillerFinished() {
         try {
             SearchResponse response = client.prepareSearch(index)
-                    .setTypes(ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey()).setFrom(0).setSize(1)
+                    .setTypes(elasticProps.getElasticsearchIsFinishedKey()).setFrom(0).setSize(1)
                     .execute().actionGet();
-            return (Boolean) response.getHits().getAt(0).getSource().get(ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey());
+            return (Boolean) response.getHits().getAt(0).getSource().get(elasticProps.getElasticsearchIsFinishedKey());
         } catch (IndexNotFoundException e) {
             return false;
         }

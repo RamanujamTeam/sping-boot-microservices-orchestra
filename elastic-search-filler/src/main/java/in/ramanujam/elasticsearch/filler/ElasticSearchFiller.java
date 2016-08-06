@@ -10,6 +10,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,21 @@ public class ElasticSearchFiller {
     @Value("elastic-data.json")
     private Resource elasticSearchFile;
 
+    private ElasticSearchProperties elasticProps;
+
     private ObjectMapper mapper;
 
-    public ElasticSearchFiller() {
-        ElasticSearchProperties elasticSearchProperties = new ElasticSearchProperties();
-        index = elasticSearchProperties.getElasticsearchIndexName();
-        type = elasticSearchProperties.getElasticsearchTypeName();
+    @Autowired
+    public ElasticSearchFiller( ElasticSearchProperties elasticProps ) {
+        this.elasticProps = elasticProps;
+        index = elasticProps.getElasticsearchIndexName();
+        type = elasticProps.getElasticsearchTypeName();
         mapper = new ObjectMapper();
         try {
             client = TransportClient.builder().build()
                     .addTransportAddress(new InetSocketTransportAddress(
-                            InetAddress.getByName(elasticSearchProperties.getElasticsearchContainerHost()),
-                            elasticSearchProperties.getElasticsearchContainerExternalPort()));
+                            InetAddress.getByName(elasticProps.getElasticsearchContainerHost()),
+                            elasticProps.getElasticsearchContainerExternalPort()));
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
@@ -86,9 +90,9 @@ public class ElasticSearchFiller {
 
     public void writeIsFinished(boolean isFinished) throws JsonProcessingException {
         Map isFinishedMap = new HashMap<>();
-        isFinishedMap.put(ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), isFinished);
+        isFinishedMap.put(elasticProps.getElasticsearchIsFinishedKey(), isFinished);
         ObjectMapper mapper = new ObjectMapper();
-        client.prepareIndex(index, ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey(), ElasticSearchProperties.getInstance().getElasticsearchIsFinishedKey())
+        client.prepareIndex(index, elasticProps.getElasticsearchIsFinishedKey(), elasticProps.getElasticsearchIsFinishedKey())
                 .setSource(mapper.writeValueAsBytes(isFinishedMap)).get();
     }
 }

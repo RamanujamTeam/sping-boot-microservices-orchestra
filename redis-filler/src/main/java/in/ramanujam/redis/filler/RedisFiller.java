@@ -18,7 +18,7 @@ public class RedisFiller {
     private static int count = 0;
 
     @Autowired
-    RedisProperties redisProps;
+    private RedisProperties redisProps;
 
     public void addBitcoins(List<BitcoinRecord> bitcoins) {
         try (Jedis jedis = new Jedis(redisProps.getRedisContainerHost(),
