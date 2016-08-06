@@ -12,18 +12,24 @@ import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+@SpringBootApplication
 public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
     private static boolean redisToMongoFinished = false;
     private static boolean elasticToMongoFinished = false;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        DockerClient dockerClient = DockerClientFactory.getClient();
 
+    @Autowired
+    void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {
+        DockerClient dockerClient = dockerClientFactory.getClient();
+        // TODO: можем автоматизировать запуск скрипта ./start_containers.sh ?
         CreateContainerResponse redisContainer = getRedisContainer(dockerClient);
         CreateContainerResponse ESContainer = getElasticSearchContainer(dockerClient);
         CreateContainerResponse rabbitMQContainer = getRabbitMQContainer(dockerClient);
@@ -62,6 +68,14 @@ public class DockerStarter {
         tryToStopContainer(dockerClient, ESContainer);
         tryToStopContainer(dockerClient, rabbitMQContainer);
         log.info("DockerStarter :: Successfully finished!");
+
+
+
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        SpringApplication.run(DockerStarter.class, args);
+
     }
 
     private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container) {

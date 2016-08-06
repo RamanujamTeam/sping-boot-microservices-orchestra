@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: translator-service-config
+  cloud:
+    config:
+      uri: http://localhost:18888
