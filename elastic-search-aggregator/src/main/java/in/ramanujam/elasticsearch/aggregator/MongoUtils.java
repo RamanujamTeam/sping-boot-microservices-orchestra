@@ -5,19 +5,22 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import in.ramanujam.common.properties.MongoDBProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MongoUtils {
+public class MongoUtils { // TODO: MongoUtils class is duplicated!
     private static DBCollection collection;
 
-    private static DBCollection setupCollection() {
-        MongoDBProperties properties = new MongoDBProperties();
-        MongoClient mongo = new MongoClient(properties.getMongoHost(), properties.getMongoPort());
-        mongo.setWriteConcern(WriteConcern.SAFE);
-        DB db = mongo.getDB(properties.getMongoDb());
+    @Autowired
+    MongoDBProperties mongoProps;
 
-        return db.getCollection(properties.getMongoCollection());
+    private DBCollection setupCollection() {
+        MongoClient mongo = new MongoClient(mongoProps.getMongoHost(), mongoProps.getMongoPort());
+        mongo.setWriteConcern(WriteConcern.SAFE);
+        DB db = mongo.getDB(mongoProps.getMongoDb());
+
+        return db.getCollection(mongoProps.getMongoCollection());
     }
 
     public DBCollection getCollection() {
