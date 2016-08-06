@@ -1,3 +1,4 @@
+# Note that this file should be named bootstrap.yml - it won't work otherwise
 spring:
   application:
     name: translator-service-config

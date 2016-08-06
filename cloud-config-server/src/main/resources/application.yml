@@ -1,3 +1,4 @@
+# Note that this file should be named application.yml - it won't work otherwise
 server:
   port: 18888
 
