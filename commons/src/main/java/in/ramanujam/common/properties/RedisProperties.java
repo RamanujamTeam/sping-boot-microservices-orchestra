@@ -1,5 +1,8 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RedisProperties extends AbstractProperties {
     private static final String REDIS_CONTAINER_NAME = "redis.container.name";
     private static final String REDIS_CONTAINER_HOST = "redis.container.host";

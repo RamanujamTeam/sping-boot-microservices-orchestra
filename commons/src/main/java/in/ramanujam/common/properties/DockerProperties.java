@@ -1,39 +1,42 @@
 package in.ramanujam.common.properties;
 
-public class DockerProperties extends AbstractProperties {
-    private static final String DOCKER_CERT_PATH = "docker.cert.path";
-    private static final String DOCKER_HOST = "docker.host";
-    private static final String DOCKER_PORT = "docker.port";
-    private static final String DOCKER_TLS_VERIFY = "docker.tls.verify";
-    private static final String DOCKER_API_VERSION = "docker.apiVersion";
-    private static final String CONFIG_FILE = "docker.properties";
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-    public DockerProperties() {
-        load();
-    }
+@Component
+public class DockerProperties {
+    @Value("${docker.host}")
+    private String dockerHost;
+
+    @Value("${docker.port}")
+    private int dockerPort;
+
+    @Value("${docker.cert.path}")
+    private String dockerCertPath;
+
+    @Value("${docker.tls.verify}")
+    private boolean dockerTlsVerify;
+
+    @Value("${docker.apiVersion}")
+    private String dockerApiVersion;
 
     public String getDockerCertPath() {
-        return getAppProps().getProperty(DOCKER_CERT_PATH);
+        return dockerCertPath;
     }
 
     public String getDockerHost() {
-        return getAppProps().getProperty(DOCKER_HOST);
+        return dockerHost;
     }
 
-    public String getDockerPort() {
-        return getAppProps().getProperty(DOCKER_PORT);
+    public int getDockerPort() {
+        return dockerPort;
     }
 
-    public Boolean getDockerTlsVerify() {
-        return Boolean.parseBoolean(getAppProps().getProperty(DOCKER_TLS_VERIFY));
+    public boolean getDockerTlsVerify() {
+        return dockerTlsVerify;
     }
 
     public String getDockerApiVersion() {
-        return getAppProps().getProperty(DOCKER_API_VERSION);
-    }
-
-    @Override
-    protected String getFile() {
-        return CONFIG_FILE;
+        return dockerApiVersion;
     }
 }

@@ -1,5 +1,8 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ElasticSearchProperties extends AbstractProperties {
 
     private static final String ELASTICSEARCH_CONTAINER_NAME = "elasticsearch.container.name";

@@ -1,5 +1,8 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MongoDBProperties extends AbstractProperties {
     private static final String MONGO_HOST = "mongo.host";
     private static final String MONGO_PORT = "mongo.port";

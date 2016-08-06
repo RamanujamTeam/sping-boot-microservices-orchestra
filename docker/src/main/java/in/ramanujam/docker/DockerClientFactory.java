@@ -3,26 +3,16 @@ package in.ramanujam.docker;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
+import in.ramanujam.common.properties.DockerProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DockerClientFactory {
 
-    @Value("${docker.host}")
-    private String dockerHost;
-
-    @Value("${docker.port}")
-    private int dockerPort;
-
-    @Value("${docker.cert.path}")
-    private String dockerCertPath;
-
-    @Value("${docker.tls.verify}")
-    private boolean dockerTlsVerify;
-
-    @Value("${docker.apiVersion}")
-    private String dockerApiVersion;
+    @Autowired
+    DockerProperties dockerProps;
 
     public DockerClient getClient() {
         if (isWindows())
@@ -50,16 +40,16 @@ public class DockerClientFactory {
 
     private DockerClient getWindowsOSClient() {
         DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
-                .withDockerCertPath(dockerCertPath)
-                .withDockerHost("tcp://" + dockerHost + ":" + dockerPort)
-                .withDockerTlsVerify(dockerTlsVerify)
-                .withApiVersion(dockerApiVersion)
+                .withDockerCertPath(dockerProps.getDockerCertPath())
+                .withDockerHost("tcp://" + dockerProps.getDockerHost() + ":" + dockerProps.getDockerPort())
+                .withDockerTlsVerify(dockerProps.getDockerTlsVerify())
+                .withApiVersion(dockerProps.getDockerApiVersion())
                 .build();
 
         return DockerClientBuilder.getInstance(config).build();
     }
 
     private DockerClient getLinuxOSClient() {
-        return DockerClientBuilder.getInstance("tcp://" + dockerHost + ":" + dockerPort).build();
+        return DockerClientBuilder.getInstance("tcp://" + dockerProps.getDockerHost() + ":" + dockerProps.getDockerPort()).build();
     }
 }

@@ -1,5 +1,8 @@
 package in.ramanujam.common.properties;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RabbitMQProperties extends AbstractProperties {
     private static final String RABBITMQ_CONTAINER_NAME = "rabbitmq.container.name";
     private static final String RABBITMQ_CONTAINER_HOST = "rabbitmq.container.host";

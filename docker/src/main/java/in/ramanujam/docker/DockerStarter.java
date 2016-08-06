@@ -10,21 +10,28 @@ import in.ramanujam.common.messaging.RabbitMQUtils;
 import in.ramanujam.common.properties.ElasticSearchProperties;
 import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
+import in.ramanujam.common.properties.RedisPropertiesComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-@SpringBootApplication
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan({"in.ramanujam.common.properties", "in.ramanujam.docker"})
 public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
     private static boolean redisToMongoFinished = false;
     private static boolean elasticToMongoFinished = false;
 
+    @Autowired
+    RedisPropertiesComponent redisPropertiesComponent;
 
     @Autowired
     void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {

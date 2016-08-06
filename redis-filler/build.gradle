@@ -18,6 +18,6 @@ buildscript {
 
 dependencies {
     compile  project(':commons')
-    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter') // TODO: refactor spring boot dependencies as in Docker module
     compile group: 'redis.clients', name: 'jedis', version: '2.8.1'
 }

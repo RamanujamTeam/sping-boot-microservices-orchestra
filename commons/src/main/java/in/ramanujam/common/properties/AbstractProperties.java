@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public abstract class AbstractProperties {
+public abstract class AbstractProperties { // TODO remove
     private Properties appProps;
 
     public void load() {
