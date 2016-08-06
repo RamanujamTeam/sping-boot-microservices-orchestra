@@ -24,7 +24,7 @@ public class RedisAggregatorScheduledTask {
     @Autowired
     private MessageBus messageBus;
 
-    @Scheduled(fixedDelay = 100)
+    @Scheduled(fixedDelay = 30_000)
     public void runWithDelay() throws IOException {
         List<BitcoinRecord> records = aggregator.retrieveRecords(100);
         for (BitcoinRecord bitcoinRecord : records) {

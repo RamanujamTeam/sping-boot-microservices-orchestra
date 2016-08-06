@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
     private static boolean redisToMongoFinished = false;
     private static boolean elasticToMongoFinished = false;
+    private static ConfigurableApplicationContext context;
 
     @Autowired
     private RedisProperties redisProps;
@@ -80,10 +82,15 @@ public class DockerStarter {
         tryToStopContainer(dockerClient, ESContainer);
         tryToStopContainer(dockerClient, rabbitMQContainer);
         log.info("DockerStarter :: Successfully finished!");
+        DockerStarter.shutdown();
+    }
+    // TODO: the problem here is that main method is not finished until runDockers method is not finished - Spring boot application does not start normally here.
+    public static void main(String[] args) throws IOException, InterruptedException {
+        context = SpringApplication.run(DockerStarter.class, args);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        SpringApplication.run(DockerStarter.class, args);
+    public static void shutdown() {
+        context.close();
     }
 
     private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container) {
