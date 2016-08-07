@@ -1,34 +1,36 @@
 package in.ramanujam.common.properties;
 
-public class MongoDBProperties extends AbstractProperties {
-    private static final String MONGO_HOST = "mongo.host";
-    private static final String MONGO_PORT = "mongo.port";
-    private static final String MONGO_DB = "mongo.db";
-    private static final String MONGO_COLLECTION = "mongo.collection";
-    private static final String CONFIG_FILE = "mongodb.properties";
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-    public MongoDBProperties() {
-        load();
-    }
+@Component
+public class MongoDBProperties{
+
+    @Value("${mongo.host}")
+    private String mongoHost;
+
+    @Value("${mongo.port}")
+    private int mongoPort;
+
+    @Value("${mongo.db}")
+    private String mongoDb;
+
+    @Value("${mongo.collection}")
+    private String mongoCollection;
 
     public String getMongoHost() {
-        return getAppProps().getProperty(MONGO_HOST);
+        return mongoHost;
     }
 
-    public Integer getMongoPort() {
-        return Integer.parseInt(getAppProps().getProperty(MONGO_PORT));
+    public int getMongoPort() {
+        return mongoPort;
     }
 
     public String getMongoDb() {
-        return getAppProps().getProperty(MONGO_DB);
+        return mongoDb;
     }
 
     public String getMongoCollection() {
-        return getAppProps().getProperty(MONGO_COLLECTION);
-    }
-
-    @Override
-    protected String getFile() {
-        return CONFIG_FILE;
+        return mongoCollection;
     }
 }

@@ -4,6 +4,7 @@ import in.ramanujam.common.model.BitcoinRecord;
 import in.ramanujam.common.properties.RedisProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
@@ -16,13 +17,16 @@ public class RedisFiller {
 
     private static int count = 0;
 
+    @Autowired
+    private RedisProperties redisProps;
+
     public void addBitcoins(List<BitcoinRecord> bitcoins) {
-        try (Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort())) {
+        try (Jedis jedis = new Jedis(redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort())) {
             Pipeline pipeline = jedis.pipelined();
             bitcoins.forEach(
                     b -> {
-                        pipeline.hset(RedisProperties.getInstance().getRedisHashsetName(), b.getId().toString(), b.getKey());
+                        pipeline.hset(redisProps.getRedisHashsetName(), b.getId().toString(), b.getKey());
                         log.info("RedisFiller :: Id = " + b.getId() + " count = " + ++count);
                     }
             );
@@ -32,9 +36,9 @@ public class RedisFiller {
     }
 
     public void writeIsFinished(boolean isFinished) {
-        Jedis jedis = new Jedis(RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort());
-        jedis.set(RedisProperties.getInstance().getRedisIsFinishedKey(), String.valueOf(isFinished));
+        Jedis jedis = new Jedis(redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort());
+        jedis.set(redisProps.getRedisIsFinishedKey(), String.valueOf(isFinished));
         jedis.close();
     }
 }

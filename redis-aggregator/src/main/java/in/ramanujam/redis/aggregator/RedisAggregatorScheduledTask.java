@@ -16,11 +16,15 @@ import java.util.List;
 public class RedisAggregatorScheduledTask {
     private static final Logger log = LoggerFactory.getLogger(RedisAggregatorScheduledTask.class);
     @Autowired
-    RedisAggregator aggregator;
+    private RedisAggregator aggregator;
     @Autowired
-    MongoUtils mongoUtils;
+    private MongoUtils mongoUtils;
+    @Autowired
+    private RedisProperties redisProps;
+    @Autowired
+    private MessageBus messageBus;
 
-    @Scheduled(fixedDelay = 100)
+    @Scheduled(fixedDelay = 30_000)
     public void runWithDelay() throws IOException {
         List<BitcoinRecord> records = aggregator.retrieveRecords(100);
         for (BitcoinRecord bitcoinRecord : records) {
@@ -28,7 +32,7 @@ public class RedisAggregatorScheduledTask {
         }
 
         if (records.size() == 0 && aggregator.isRedisFillerFinished()) {
-            MessageBus.getInstance().sendMessage(RedisProperties.getInstance().getRedisToMongoIsFinishedKey());
+            messageBus.sendMessage(redisProps.getRedisToMongoIsFinishedKey());
             log.info("RedisToMongo :: Successfully finished!");
             RedisAggregatorStarter.shutdown();
         }

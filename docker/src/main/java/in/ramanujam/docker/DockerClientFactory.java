@@ -4,9 +4,17 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
 import in.ramanujam.common.properties.DockerProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DockerClientFactory {
-    public static DockerClient getClient() {
+
+    @Autowired
+    private DockerProperties dockerProps;
+
+    public DockerClient getClient() {
         if (isWindows())
             return getWindowsOSClient();
         else
@@ -30,22 +38,18 @@ public class DockerClientFactory {
         return System.getProperty("os.name").toLowerCase();
     }
 
-    private static DockerClient getWindowsOSClient() {
-        DockerProperties properties = new DockerProperties();
-
+    private DockerClient getWindowsOSClient() {
         DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
-                .withDockerCertPath(properties.getDockerCertPath())
-                .withDockerHost("tcp://" + properties.getDockerHost() + ":" + properties.getDockerPort())
-                .withDockerTlsVerify(properties.getDockerTlsVerify())
-                .withApiVersion(properties.getDockerApiVersion())
+                .withDockerCertPath(dockerProps.getDockerCertPath())
+                .withDockerHost("tcp://" + dockerProps.getDockerHost() + ":" + dockerProps.getDockerPort())
+                .withDockerTlsVerify(dockerProps.getDockerTlsVerify())
+                .withApiVersion(dockerProps.getDockerApiVersion())
                 .build();
 
         return DockerClientBuilder.getInstance(config).build();
     }
 
-    private static DockerClient getLinuxOSClient() {
-        DockerProperties properties = new DockerProperties();
-
-        return DockerClientBuilder.getInstance("tcp://" + properties.getDockerHost() + ":" + properties.getDockerPort()).build();
+    private DockerClient getLinuxOSClient() {
+        return DockerClientBuilder.getInstance("tcp://" + dockerProps.getDockerHost() + ":" + dockerProps.getDockerPort()).build();
     }
 }

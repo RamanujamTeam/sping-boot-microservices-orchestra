@@ -12,18 +12,38 @@ import in.ramanujam.common.properties.RabbitMQProperties;
 import in.ramanujam.common.properties.RedisProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan({"in.ramanujam.docker", "in.ramanujam.common"})
 public class DockerStarter {
     private static final Logger log = LoggerFactory.getLogger(DockerStarter.class);
     private static boolean redisToMongoFinished = false;
     private static boolean elasticToMongoFinished = false;
+    private static ConfigurableApplicationContext context;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        DockerClient dockerClient = DockerClientFactory.getClient();
+    @Autowired
+    private RedisProperties redisProps;
+    @Autowired
+    private ElasticSearchProperties elasticProps;
+    @Autowired
+    private RabbitMQUtils rabbitMQUtils;
+    @Autowired
+    private RabbitMQProperties rabbitProps;
 
+    @Autowired
+    private void runDockers(DockerClientFactory dockerClientFactory) throws IOException, InterruptedException {
+        DockerClient dockerClient = dockerClientFactory.getClient();
+        // TODO: можем автоматизировать запуск скрипта ./start_containers.sh ?
         CreateContainerResponse redisContainer = getRedisContainer(dockerClient);
         CreateContainerResponse ESContainer = getElasticSearchContainer(dockerClient);
         CreateContainerResponse rabbitMQContainer = getRabbitMQContainer(dockerClient);
@@ -32,26 +52,26 @@ public class DockerStarter {
         tryToStartContainer(dockerClient, ESContainer);
         tryToStartContainer(dockerClient, rabbitMQContainer);
 
-        Connection connection = RabbitMQUtils.getConnection();
+        Connection connection = rabbitMQUtils.getConnection();
         Channel channel = connection.createChannel();
-        channel.queueDeclare(RabbitMQProperties.getInstance().getRabbitmqQueueName(), false, false, false, null);
+        channel.queueDeclare(rabbitProps.getRabbitmqQueueName(), false, false, false, null);
 
         Consumer consumer = new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
                     throws IOException {
                 String message = new String(body, "UTF-8");
-                if (ElasticSearchProperties.getInstance().getElasticsearchToMongoIsFinishedKey().equals(message)) {
+                if (elasticProps.getElasticsearchToMongoIsFinishedKey().equals(message)) {
                     elasticToMongoFinished = true;
                 }
 
-                if (RedisProperties.getInstance().getRedisToMongoIsFinishedKey().equals(message)) {
+                if (redisProps.getRedisToMongoIsFinishedKey().equals(message)) {
                     redisToMongoFinished = true;
                 }
             }
         };
 
-        channel.basicConsume(RabbitMQProperties.getInstance().getRabbitmqQueueName(), true, consumer);
+        channel.basicConsume(rabbitProps.getRabbitmqQueueName(), true, consumer);
 
         while (!(redisToMongoFinished && elasticToMongoFinished)) {
             Thread.sleep(3000);
@@ -62,6 +82,15 @@ public class DockerStarter {
         tryToStopContainer(dockerClient, ESContainer);
         tryToStopContainer(dockerClient, rabbitMQContainer);
         log.info("DockerStarter :: Successfully finished!");
+        DockerStarter.shutdown();
+    }
+    // TODO: the problem here is that main method is not finished until runDockers method is not finished - Spring boot application does not start normally here.
+    public static void main(String[] args) throws IOException, InterruptedException {
+        context = SpringApplication.run(DockerStarter.class, args);
+    }
+
+    public static void shutdown() {
+        context.close();
     }
 
     private static void tryToStartContainer(DockerClient dockerClient, CreateContainerResponse container) {
@@ -82,27 +111,25 @@ public class DockerStarter {
         }
     }
 
-    private static CreateContainerResponse getRedisContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RedisProperties.getInstance().getRedisContainerPort(),
-                RedisProperties.getInstance().getRedisContainerHost(),
-                RedisProperties.getInstance().getRedisContainerExternalPort(),
-                RedisProperties.getInstance().getRedisContainerName());
+    private CreateContainerResponse getRedisContainer(DockerClient dockerClient) {
+        return createContainer(dockerClient, redisProps.getRedisContainerPort(),
+                redisProps.getRedisContainerHost(),
+                redisProps.getRedisContainerExternalPort(),
+                redisProps.getRedisContainerName());
     }
 
-    private static CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {
-        ElasticSearchProperties properties = new ElasticSearchProperties();
-
-        return createContainer(dockerClient, properties.getElasticsearchContainerPort(),
-                properties.getElasticsearchContainerHost(),
-                properties.getElasticsearchContainerExternalPort(),
-                properties.getElasticsearchContainerName());
+    private CreateContainerResponse getElasticSearchContainer(DockerClient dockerClient) {
+        return createContainer(dockerClient, elasticProps.getElasticsearchContainerPort(),
+                elasticProps.getElasticsearchContainerHost(),
+                elasticProps.getElasticsearchContainerExternalPort(),
+                elasticProps.getElasticsearchContainerName());
     }
 
-    private static CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
-        return createContainer(dockerClient, RabbitMQProperties.getInstance().getRabbitMQContainerPort(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerHost(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerExternalPort(),
-                RabbitMQProperties.getInstance().getRabbitMQContainerName());
+    private CreateContainerResponse getRabbitMQContainer(DockerClient dockerClient) {
+        return createContainer(dockerClient, rabbitProps.getRabbitMQContainerPort(),
+                rabbitProps.getRabbitMQContainerHost(),
+                rabbitProps.getRabbitMQContainerExternalPort(),
+                rabbitProps.getRabbitMQContainerName());
     }
 
     private static CreateContainerResponse createContainer(final DockerClient dockerClient, final Integer port, final String host,

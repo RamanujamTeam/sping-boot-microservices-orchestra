@@ -5,6 +5,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import in.ramanujam.common.properties.MongoDBProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.UnknownHostException;
@@ -13,13 +14,15 @@ import java.net.UnknownHostException;
 public class MongoUtils {
     private static DBCollection collection;
 
-    private static DBCollection setupCollection() throws UnknownHostException {
-        MongoDBProperties properties = new MongoDBProperties();
-        MongoClient mongo = new MongoClient(properties.getMongoHost(), properties.getMongoPort());
-        mongo.setWriteConcern(WriteConcern.SAFE);
-        DB db = mongo.getDB(properties.getMongoDb());
+    @Autowired
+    private MongoDBProperties mongoProps;
 
-        return db.getCollection(properties.getMongoCollection());
+    private DBCollection setupCollection() throws UnknownHostException {
+        MongoClient mongo = new MongoClient(mongoProps.getMongoHost(), mongoProps.getMongoPort());
+        mongo.setWriteConcern(WriteConcern.SAFE);
+        DB db = mongo.getDB(mongoProps.getMongoDb());
+
+        return db.getCollection(mongoProps.getMongoCollection());
     }
 
     public DBCollection getCollection() throws UnknownHostException {

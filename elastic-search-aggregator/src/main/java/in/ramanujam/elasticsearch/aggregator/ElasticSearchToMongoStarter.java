@@ -1,11 +1,16 @@
 package in.ramanujam.elasticsearch.aggregator;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan({"in.ramanujam.elasticsearch.aggregator", "in.ramanujam.common.properties", "in.ramanujam.common.messaging"})
 @EnableScheduling
 public class ElasticSearchToMongoStarter {
     private static ConfigurableApplicationContext context;
