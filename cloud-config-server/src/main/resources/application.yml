@@ -1,4 +1,7 @@
 # Note that this file should be named application.yml - it won't work otherwise
+# If we name file application-dev.yml - it will only be applied when "dev" profile is active,
+# e.g. when the program is ran with VM parameter "-Dspring.profiles.active=dev"
+# or env variable SPRING_PROFILES_ACTIVE=dev
 server:
   port: 18888
 

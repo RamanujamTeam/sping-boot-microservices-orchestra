@@ -1,4 +1,7 @@
 # Note that this file should be named bootstrap.yml - it won't work otherwise
+# If we name file bootstrap-dev.yml - it will only be applied when "dev" profile is active,
+# e.g. when the program is ran with VM parameter "-Dspring.profiles.active=dev"
+# or env variable SPRING_PROFILES_ACTIVE=dev
 spring:
   application:
     name: translator-service-config
