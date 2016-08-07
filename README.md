@@ -12,12 +12,15 @@ Redis and ElasticSearch should run in Docker containers that should be started a
 # Project structure
 Translator Service project consists of five microservices:
 
+1. Config Server
 1. Docker Service
 1. Redis Filler
 1. ElasticSearch Filler 
 1. Redis Aggregator
 1. ElasticSearch Aggregator
 
+### Config Server
+Implemented with Spring Cloud Config it provides various credentials to other microservices.
 ### Docker Service
 Docker Service is responsible for starting Docker containers (Redis, ElasticSearch, RabbitMQ) and stopping them when the job is finished. It is listening for RabbitMQ events from Redis and ElasticSearch Aggregators to define when it is time to stop containers.
 ### Redis Filler
@@ -31,7 +34,7 @@ Redis Aggregator periodically reads persisted data from Redis and writes it to M
 Similar to Redis Aggregator, it reads data from ElasticSearch and writes to MongoDB. When finished, it sends message to Docker Service to stop ElasticSearch container.
 
 # Technologies used
-* Spring Boot
+* Spring Boot + Spring Cloud Config
 * Docker
 * Redis
 * ElasticSearch
@@ -39,4 +42,4 @@ Similar to Redis Aggregator, it reads data from ElasticSearch and writes to Mong
 
 # Next steps
 * Test coverage
-* Integrating ZooKeeper to avoid duplicating properties files
+* Dockerization of the services
