@@ -1,4 +1,4 @@
-# Project description
+# 6 Microservices Orchestra
 Full project requirements are available [here](https://3monthjunior.slack.com/files/lozenko/F1GMKRFGB/Deep_Server-Side_Translator). To sum it up:
 
 **Provided:** 2 input files: first one contains information about people (id, name, email...) and second contains bitcons corresponding for those people(id, bitcoin).
